@@ -1,13 +1,14 @@
 import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 export const revalidate = 60;
 
 async function getWeapon(slug) {
   const { data, error } = await supabase
-    .from('weapons')
-    .select('*')
-    .eq('slug', slug)
+    .from("weapons")
+    .select("*")
+    .eq("slug", slug)
     .single();
 
   if (error || !data) {
@@ -30,15 +31,20 @@ export default async function WeaponDetailPage({ params }) {
         <h1 className="text-4xl font-bold mb-2">{weapon.name}</h1>
         <p className="text-lg text-gray-600 capitalize">{weapon.type}</p>
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-8 mb-8">
         {weapon.image_url && (
-          <img
-            src={weapon.image_url}
-            alt={weapon.name}
-            className="w-full rounded-lg shadow-lg"
-          />
+          <div className="relative w-full h-64 rounded-lg shadow-lg">
+            <Image
+              src={weapon.image_url}
+              alt={weapon.name}
+              fill
+              style={{ objectFit: "cover" }}
+              priority
+            />
+          </div>
         )}
+
         <div>
           {weapon.description && (
             <div className="mb-4">
@@ -46,7 +52,7 @@ export default async function WeaponDetailPage({ params }) {
               <p className="text-gray-700">{weapon.description}</p>
             </div>
           )}
-          
+
           {weapon.cost && (
             <div className="mb-4">
               <h3 className="text-xl font-semibold mb-2">Cost</h3>
@@ -85,11 +91,11 @@ export default async function WeaponDetailPage({ params }) {
               <div key={level} className="border-l-4 border-blue-500 pl-4">
                 <h3 className="text-lg font-semibold mb-2">Level {level}</h3>
                 <div className="text-gray-700">
-                  {typeof upgrades === 'object' ? (
+                  {typeof upgrades === "object" ? (
                     <ul className="list-disc pl-6">
                       {Object.entries(upgrades).map(([stat, value]) => (
                         <li key={stat} className="capitalize">
-                          {stat.replace(/_/g, ' ')}: {value}
+                          {stat.replace(/_/g, " ")}: {value}
                         </li>
                       ))}
                     </ul>

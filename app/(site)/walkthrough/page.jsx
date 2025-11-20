@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
 async function getChapters() {
   const { data, error } = await supabase
-    .from('chapters')
-    .select('*')
-    .order('chapter_number', { ascending: true });
+    .from("chapters")
+    .select("*")
+    .order("chapter_number", { ascending: true });
 
   if (error) {
-    console.error('Error fetching chapters:', error);
+    console.error("Error fetching chapters:", error);
     return [];
   }
 
@@ -26,6 +27,7 @@ export default async function WalkthroughPage() {
       <p className="text-gray-600 mb-8">
         Complete chapter-by-chapter walkthrough for Resident Evil 4.
       </p>
+
       <div className="grid gap-4">
         {chapters.length > 0 ? (
           chapters.map((chapter) => (
@@ -36,11 +38,15 @@ export default async function WalkthroughPage() {
             >
               <div className="flex items-start gap-4">
                 {chapter.thumbnail_url && (
-                  <img
-                    src={chapter.thumbnail_url}
-                    alt={chapter.title}
-                    className="w-24 h-24 object-cover rounded"
-                  />
+                  <div className="relative w-24 h-24 rounded overflow-hidden">
+                    <Image
+                      src={chapter.thumbnail_url}
+                      alt={chapter.title}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      priority
+                    />
+                  </div>
                 )}
                 <div>
                   <h2 className="text-2xl font-semibold mb-2">
@@ -55,7 +61,9 @@ export default async function WalkthroughPage() {
           ))
         ) : (
           <div className="p-6 bg-white rounded-lg shadow">
-            <p className="text-gray-600">No chapters available yet. Check back soon!</p>
+            <p className="text-gray-600">
+              No chapters available yet. Check back soon!
+            </p>
           </div>
         )}
       </div>

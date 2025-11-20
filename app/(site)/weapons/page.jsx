@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
 
 export const revalidate = 60;
 
 async function getWeapons() {
   const { data, error } = await supabase
-    .from('weapons')
-    .select('*')
-    .order('type', { ascending: true });
+    .from("weapons")
+    .select("*")
+    .order("type", { ascending: true });
 
   if (error) {
-    console.error('Error fetching weapons:', error);
+    console.error("Error fetching weapons:", error);
     return [];
   }
 
@@ -35,7 +36,7 @@ export default async function WeaponsPage() {
       <p className="text-gray-600 mb-8">
         Complete weapon stats, upgrades, and recommendations.
       </p>
-      
+
       {Object.keys(weaponsByType).length > 0 ? (
         Object.entries(weaponsByType).map(([type, typeWeapons]) => (
           <div key={type} className="mb-8">
@@ -48,12 +49,17 @@ export default async function WeaponsPage() {
                   className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden"
                 >
                   {weapon.image_url && (
-                    <img
-                      src={weapon.image_url}
-                      alt={weapon.name}
-                      className="w-full h-48 object-cover"
-                    />
+                    <div className="relative w-full h-48">
+                      <Image
+                        src={weapon.image_url}
+                        alt={weapon.name}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        priority
+                      />
+                    </div>
                   )}
+
                   <div className="p-4">
                     <h3 className="text-xl font-semibold mb-2">{weapon.name}</h3>
                     <p className="text-sm text-gray-500 mb-2 capitalize">{weapon.type}</p>

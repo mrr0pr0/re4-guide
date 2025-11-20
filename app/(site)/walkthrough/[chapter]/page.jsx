@@ -1,14 +1,15 @@
 import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import Image from "next/image";
 
 export const revalidate = 60;
 
 async function getChapter(slug) {
   const { data, error } = await supabase
-    .from('chapters')
-    .select('*')
-    .eq('slug', slug)
+    .from("chapters")
+    .select("*")
+    .eq("slug", slug)
     .single();
 
   if (error || !data) {
@@ -35,13 +36,19 @@ export default async function ChapterPage({ params }) {
           <p className="text-lg text-gray-600">{chapter.description}</p>
         )}
       </div>
+
       {chapter.thumbnail_url && (
-        <img
-          src={chapter.thumbnail_url}
-          alt={chapter.title}
-          className="w-full max-w-2xl rounded-lg shadow-lg mb-8"
-        />
+        <div className="relative w-full max-w-2xl h-64 rounded-lg shadow-lg mb-8">
+          <Image
+            src={chapter.thumbnail_url}
+            alt={chapter.title}
+            fill
+            style={{ objectFit: "cover" }}
+            priority
+          />
+        </div>
       )}
+
       <div className="prose max-w-none">
         <ReactMarkdown>{chapter.content}</ReactMarkdown>
       </div>

@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
@@ -6,9 +7,9 @@ export const revalidate = 60;
 
 async function getBoss(slug) {
   const { data, error } = await supabase
-    .from('bosses')
-    .select('*')
-    .eq('slug', slug)
+    .from("bosses")
+    .select("*")
+    .eq("slug", slug)
     .single();
 
   if (error || !data) {
@@ -33,15 +34,20 @@ export default async function BossDetailPage({ params }) {
           <p className="text-lg text-gray-600">Chapter {boss.chapter}</p>
         )}
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-8 mb-8">
         {boss.image_url && (
-          <img
-            src={boss.image_url}
-            alt={boss.name}
-            className="w-full rounded-lg shadow-lg"
-          />
+          <div className="relative w-full h-96 rounded-lg shadow-lg overflow-hidden">
+            <Image
+              src={boss.image_url}
+              alt={boss.name}
+              fill
+              style={{ objectFit: "cover" }}
+              priority
+            />
+          </div>
         )}
+
         <div>
           {boss.description && (
             <div className="mb-4">
@@ -49,28 +55,35 @@ export default async function BossDetailPage({ params }) {
               <p className="text-gray-700">{boss.description}</p>
             </div>
           )}
+
           {boss.health && (
             <div className="mb-4">
               <h3 className="text-xl font-semibold mb-2">Health</h3>
               <p className="text-gray-700">{boss.health} HP</p>
             </div>
           )}
+
           {boss.weaknesses && Object.keys(boss.weaknesses).length > 0 && (
             <div className="mb-4">
               <h3 className="text-xl font-semibold mb-2">Weaknesses</h3>
               <ul className="list-disc pl-6">
                 {Object.entries(boss.weaknesses).map(([key, value]) => (
-                  <li key={key} className="text-gray-700">{value}</li>
+                  <li key={key} className="text-gray-700">
+                    {value}
+                  </li>
                 ))}
               </ul>
             </div>
           )}
+
           {boss.rewards && Object.keys(boss.rewards).length > 0 && (
             <div className="mb-4">
               <h3 className="text-xl font-semibold mb-2">Rewards</h3>
               <ul className="list-disc pl-6">
                 {Object.entries(boss.rewards).map(([key, value]) => (
-                  <li key={key} className="text-gray-700">{value}</li>
+                  <li key={key} className="text-gray-700">
+                    {value}
+                  </li>
                 ))}
               </ul>
             </div>
