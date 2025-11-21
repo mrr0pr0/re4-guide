@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 export default function HomePage() {
@@ -6,9 +7,15 @@ export default function HomePage() {
     <div className="space-y-8">
       {/* Hero Section */}
       <div className="relative h-[400px] w-full overflow-hidden rounded-lg bg-muted">
-        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-          <span className="text-lg">Hero Image Placeholder (1200x400)</span>
-        </div>
+        <Link href="/walkthrough" className="absolute inset-0">
+          <Image
+            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763713649/cover_doosru.jpg"
+            alt="Resident Evil 4 Remake Hero"
+            fill
+            className="object-cover transition-transform duration-500 hover:scale-105"
+            priority
+          />
+        </Link>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background to-transparent p-8">
           <h1 className="text-4xl font-extrabold tracking-tight text-white lg:text-5xl drop-shadow-md">
             Resident Evil 4 Remake Guide
@@ -32,7 +39,12 @@ export default function HomePage() {
           {/* Walkthrough Card */}
           <Link href="/walkthrough" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
-              <span>Walkthrough Image</span>
+              <Image
+                src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714528/walkthore_utvlcg.webp"
+                alt="Walkthrough"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Walkthrough</h3>
@@ -43,7 +55,12 @@ export default function HomePage() {
           {/* Bosses Card */}
           <Link href="/bosses" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
-              <span>Bosses Image</span>
+              <Image
+                src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714632/bossescober_gnhimx.jpg"
+                alt="Bosses"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Bosses</h3>
@@ -54,7 +71,12 @@ export default function HomePage() {
           {/* Weapons Card */}
           <Link href="/weapons" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
-              <span>Weapons Image</span>
+              <Image
+                src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714731/sg-09r_wqqr8z.png"
+                alt="Weapons"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Weapons</h3>
@@ -65,7 +87,12 @@ export default function HomePage() {
           {/* Treasures Card */}
           <Link href="/treasures" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
-              <span>Treasures Image</span>
+              <Image
+                src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714795/tresusers_pa4zxa.avif"
+                alt="Treasures"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Treasures</h3>
@@ -76,7 +103,12 @@ export default function HomePage() {
           {/* Requests Card */}
           <Link href="/requests" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
-              <span>Requests Image</span>
+              <Image
+                src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714858/merthant_zcmjf1.jpg"
+                alt="Requests"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Merchant Requests</h3>
@@ -87,7 +119,12 @@ export default function HomePage() {
           {/* Puzzles Card */}
           <Link href="/puzzles" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
-              <span>Puzzles Image</span>
+              <Image
+                src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714944/puzle_nohxev.avif"
+                alt="Puzzles"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Puzzle Solutions</h3>
