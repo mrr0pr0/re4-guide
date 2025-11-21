@@ -47,7 +47,7 @@ export default async function BossesPage() {
             <Link
               key={boss.id}
               href={`/bosses/${boss.slug}`}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden"
+              className="bg-background border border-border rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden group"
             >
               {boss.image_url && (
                 <div className="relative w-full h-48">

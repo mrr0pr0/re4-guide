@@ -26,7 +26,7 @@ export default function HomePage() {
       {/* Intro Text */}
       <div className="prose prose-invert max-w-none">
         <p className="text-xl leading-relaxed text-muted-foreground">
-          Welcome to the comprehensive <strong>Resident Evil 4 Remake Wiki Guide</strong>. This guide covers everything you need to survive the horror, including a complete <Link href="/walkthrough" className="text-primary hover:underline">Walkthrough</Link> of every chapter, strategies for defeating every <Link href="/bosses" className="text-primary hover:underline">Boss</Link>, locations for all <Link href="/treasures" className="text-primary hover:underline">Treasures</Link> and <Link href="/weapons" className="text-primary hover:underline">Weapons</Link>, and solutions to every puzzle.
+          Welcome to the comprehensive <strong>Resident Evil 4 Remake</strong>. This guide covers everything you need to survive the horror, including a complete <Link href="/walkthrough" className="text-primary hover:underline">Walkthrough</Link> of every chapter, strategies for defeating every <Link href="/bosses" className="text-primary hover:underline">Boss</Link>, locations for all <Link href="/treasures" className="text-primary hover:underline">Treasures</Link> and <Link href="/weapons" className="text-primary hover:underline">Weapons</Link>, and solutions to every puzzle.
         </p>
       </div>
 
