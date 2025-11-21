@@ -3,7 +3,16 @@ const nextConfig = {
   reactCompiler: true,
 
   images: {
-    domains: ['https://supabase-re4rguide.cool.ropro.no/'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'supabase-re4rguide.cool.ropro.no',
+      },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
 

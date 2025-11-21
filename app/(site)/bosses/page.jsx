@@ -2,24 +2,29 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
 
-export const revalidate = 60;
+export const revalidate = 0; // Disable cache for debugging
 
 async function getBosses() {
-  const { data, error } = await supabase
-    .from("bosses")
-    .select("*")
-    .order("chapter", { ascending: true });
+  try {
+    const { data, error } = await supabase
+      .from("bosses")
+      .select("*")
+      .order("chapter", { ascending: true });
 
-  if (error) {
-    console.error("Error fetching bosses:", error);
-    return [];
+    if (error) {
+      console.error("Error fetching bosses:", error);
+      return { bosses: [], error };
+    }
+
+    return { bosses: data || [], error: null };
+  } catch (e) {
+    console.error("Unexpected error:", e);
+    return { bosses: [], error: e };
   }
-
-  return data || [];
 }
 
 export default async function BossesPage() {
-  const bosses = await getBosses();
+  const { bosses, error } = await getBosses();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -27,6 +32,14 @@ export default async function BossesPage() {
       <p className="text-gray-600 mb-8">
         Strategies and tips for defeating all bosses in Resident Evil 4.
       </p>
+
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+          <strong className="font-bold">Error loading bosses: </strong>
+          <span className="block sm:inline">{error.message || JSON.stringify(error)}</span>
+          <p className="mt-2 text-sm">Check your Supabase connection and RLS policies.</p>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {bosses.length > 0 ? (
@@ -64,11 +77,13 @@ export default async function BossesPage() {
             </Link>
           ))
         ) : (
-          <div className="col-span-full p-6 bg-white rounded-lg shadow">
-            <p className="text-gray-600">
-              No bosses available yet. Check back soon!
-            </p>
-          </div>
+          !error && (
+            <div className="col-span-full p-6 bg-white rounded-lg shadow">
+              <p className="text-gray-600">
+                No bosses available yet. Check back soon!
+              </p>
+            </div>
+          )
         )}
       </div>
     </div>
