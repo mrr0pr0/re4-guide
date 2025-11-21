@@ -33,7 +33,7 @@ export default async function WeaponsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-6">Weapons Guide</h1>
-      <p className="text-gray-600 mb-8">
+      <p className="text-muted-foreground mb-8">
         Complete weapon stats, upgrades, and recommendations.
       </p>
 
@@ -46,7 +46,7 @@ export default async function WeaponsPage() {
                 <Link
                   key={weapon.id}
                   href={`/weapons/${weapon.slug}`}
-                  className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden"
+                  className="bg-background border border-border rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden group"
                 >
                   {weapon.image_url && (
                     <div className="relative w-full h-48">
@@ -61,10 +61,10 @@ export default async function WeaponsPage() {
                   )}
 
                   <div className="p-4">
-                    <h3 className="text-xl font-semibold mb-2">{weapon.name}</h3>
-                    <p className="text-sm text-gray-500 mb-2 capitalize">{weapon.type}</p>
+                    <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{weapon.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-2 capitalize">{weapon.type}</p>
                     {weapon.cost && (
-                      <p className="text-sm text-gray-700">Cost: {weapon.cost} Pesetas</p>
+                      <p className="text-sm text-muted-foreground">Cost: {weapon.cost} Pesetas</p>
                     )}
                   </div>
                 </Link>
@@ -73,8 +73,8 @@ export default async function WeaponsPage() {
           </div>
         ))
       ) : (
-        <div className="p-6 bg-white rounded-lg shadow">
-          <p className="text-gray-600">No weapons available yet. Check back soon!</p>
+        <div className="p-6 bg-background border border-border rounded-lg shadow">
+          <p className="text-muted-foreground">No weapons available yet. Check back soon!</p>
         </div>
       )}
     </div>
