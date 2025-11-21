@@ -101,7 +101,7 @@ export default function HomePage() {
           </Link>
 
           {/* Requests Card */}
-          <Link href="/requests" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
+          <Link href="/merchant-requests" className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary">
             <div className="aspect-video w-full bg-muted relative flex items-center justify-center text-muted-foreground">
               <Image
                 src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1763714858/merthant_zcmjf1.jpg"
