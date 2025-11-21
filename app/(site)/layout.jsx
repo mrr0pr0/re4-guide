@@ -1,23 +1,23 @@
-// app/(admin)/layout.jsx
-import Link from "next/link";
+import SiteHeader from "@/components/SiteHeader";
+import WikiSidebar from "@/components/WikiSidebar";
 
 export const metadata = {
-  title: "Admin Panel",
+  title: "Resident Evil 4 Remake Guide",
+  description: "Comprehensive walkthrough, boss strategies, and treasure locations.",
 };
 
-export default function AdminLayout({ children }) {
+export default function SiteLayout({ children }) {
   return (
-    <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
-      <header style={{ marginBottom: "2rem" }}>
-        <h1>Admin Panel</h1>
-        <nav>
-          <Link href="/admin/bosses">Bosses</Link> |{" "}
-          <Link href="/admin/treasures">Treasures</Link> |{" "}
-          <Link href="/admin/walkthrough">Walkthrough</Link> |{" "}
-          <Link href="/admin/weapons">Weapons</Link>
-        </nav>
-      </header>
-      <main>{children}</main>
+    <div className="relative flex min-h-screen flex-col bg-background">
+      <SiteHeader />
+      <div className="container flex-1 items-start md:grid md:grid-cols-[250px_1fr] md:gap-6 lg:grid-cols-[300px_1fr] lg:gap-10">
+        <WikiSidebar />
+        <main className="relative py-6 lg:gap-10 lg:py-8">
+          <div className="mx-auto w-full min-w-0">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
