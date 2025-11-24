@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, use } from 'react';
 import dynamic from 'next/dynamic';
 import MapSidebar from '@/components/MapSidebar';
+import { supabase } from '@/lib/supabaseClient';
+import { Loader2 } from 'lucide-react';
 
 // Dynamically import GameMap to avoid SSR issues with Leaflet
 const GameMap = dynamic(() => import('@/components/GameMap'), {
@@ -11,21 +13,75 @@ const GameMap = dynamic(() => import('@/components/GameMap'), {
 });
 
 export default function AreaMapPage({ params }) {
-  // Mock Data - In a real app, this would come from Supabase based on params.area
-  const [categories, setCategories] = useState({
-    treasure: { name: 'Treasure', color: '#FFD700', visible: true },
-    merchant: { name: 'Merchant', color: '#00FF00', visible: true },
-    save: { name: 'Typewriter', color: '#FF8C00', visible: true },
-    enemy: { name: 'Enemy', color: '#FF0000', visible: true },
-  });
+  const resolvedParams = use(params);
+  const { area } = resolvedParams;
 
-  // Mock Pins - These coordinates need to be calibrated to the image
-  // For now, we'll place some random ones to test
-  const pins = [
-    { id: 1, x: 500, y: 500, category: 'treasure', title: 'Velvet Blue', description: 'Found in the small hut.' },
-    { id: 2, x: 800, y: 600, category: 'merchant', title: 'The Merchant', description: 'Got some rare things on sale, stranger!' },
-    { id: 3, x: 300, y: 400, category: 'save', title: 'Village Typewriter', description: 'Save your progress here.' },
-  ];
+  const [mapData, setMapData] = useState(null);
+  const [pins, setPins] = useState([]);
+  const [categories, setCategories] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [foundPins, setFoundPins] = useState([]);
+
+  useEffect(() => {
+    // Load found pins from local storage
+    const savedFound = localStorage.getItem('re4_found_pins');
+    if (savedFound) {
+      setFoundPins(JSON.parse(savedFound));
+    }
+
+    fetchMapData();
+  }, [area]);
+
+  const fetchMapData = async () => {
+    try {
+      setLoading(true);
+
+      // 1. Fetch Map by Slug
+      const { data: map, error: mapError } = await supabase
+        .from('maps')
+        .select('*')
+        .eq('slug', area)
+        .single();
+
+      if (mapError) throw mapError;
+      setMapData(map);
+
+      // 2. Fetch Categories
+      const { data: catsData, error: catError } = await supabase
+        .from('pin_categories')
+        .select('*');
+
+      if (catError) throw catError;
+
+      // Transform categories to object with visibility
+      const catsObj = catsData.reduce((acc, cat) => {
+        acc[cat.slug] = { ...cat, visible: true };
+        return acc;
+      }, {});
+      setCategories(catsObj);
+
+      // 3. Fetch Pins
+      const { data: pinsData, error: pinsError } = await supabase
+        .from('pins')
+        .select('*')
+        .eq('map_id', map.id);
+
+      if (pinsError) throw pinsError;
+
+      // Map category_id to slug for the component
+      const processedPins = pinsData.map(p => {
+        const catSlug = catsData.find(c => c.id === p.category_id)?.slug;
+        return { ...p, category: catSlug };
+      });
+
+      setPins(processedPins);
+
+    } catch (error) {
+      console.error('Error loading map:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleCategory = (key) => {
     setCategories(prev => ({
@@ -33,6 +89,34 @@ export default function AreaMapPage({ params }) {
       [key]: { ...prev[key], visible: !prev[key].visible }
     }));
   };
+
+  const handlePinClick = (pin) => {
+    // Toggle found status
+    const isFound = foundPins.includes(pin.id);
+    let newFound;
+
+    if (isFound) {
+      newFound = foundPins.filter(id => id !== pin.id);
+    } else {
+      newFound = [...foundPins, pin.id];
+    }
+
+    setFoundPins(newFound);
+    localStorage.setItem('re4_found_pins', JSON.stringify(newFound));
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-[calc(100vh-3.5rem)] bg-gray-950 text-white"><Loader2 className="animate-spin mr-2" /> Loading Map...</div>;
+  }
+
+  if (!mapData) {
+    return <div className="flex items-center justify-center h-[calc(100vh-3.5rem)] bg-gray-950 text-white">Map not found: {area}</div>;
+  }
+
+  const displayPins = pins.map(p => ({
+    ...p,
+    title: foundPins.includes(p.id) ? `✓ ${p.title}` : p.title
+  }));
 
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-3.5rem)] overflow-hidden">
@@ -43,9 +127,11 @@ export default function AreaMapPage({ params }) {
 
       <div className="flex-1 relative bg-gray-950 h-full">
         <GameMap
-          imageUrl="/maps/test-map.jpg"
-          pins={pins}
+          imageUrl={mapData.image_url}
+          pins={displayPins}
           categories={categories}
+          onPopupAction={handlePinClick}
+          isInteractive={true} // Enable the "Mark as Found" button in popup
         />
       </div>
     </div>

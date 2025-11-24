@@ -1,6 +1,6 @@
 'use client';
 
-import { MapContainer, ImageOverlay, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, ImageOverlay, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility';
@@ -15,8 +15,17 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const MapController = ({ bounds }) => {
+const MapController = ({ bounds, onMapClick }) => {
     const map = useMap();
+
+    useMapEvents({
+        click(e) {
+            if (onMapClick) {
+                onMapClick(e);
+            }
+        },
+    });
+
     useEffect(() => {
         if (bounds) {
             map.fitBounds(bounds);
@@ -25,7 +34,7 @@ const MapController = ({ bounds }) => {
     return null;
 };
 
-export default function GameMap({ imageUrl, pins = [], categories = {} }) {
+export default function GameMap({ imageUrl, pins = [], categories = {}, onMapClick, onPinClick, onPopupAction, isInteractive = false }) {
     const [bounds, setBounds] = useState(null);
 
     useEffect(() => {
@@ -36,7 +45,6 @@ export default function GameMap({ imageUrl, pins = [], categories = {} }) {
                 const w = img.width;
                 const h = img.height;
                 // Create bounds for the image [ [0,0], [height, width] ]
-                // In Leaflet CRS.Simple, y goes up, so we might need to flip or just use standard rect
                 setBounds([[0, 0], [h, w]]);
             };
         }
@@ -60,30 +68,41 @@ export default function GameMap({ imageUrl, pins = [], categories = {} }) {
                 url={imageUrl}
                 bounds={bounds}
             />
-            <MapController bounds={bounds} />
+            <MapController bounds={bounds} onMapClick={onMapClick} />
 
             {pins.map((pin) => {
                 // If category is hidden, don't render
-                if (categories[pin.category] && !categories[pin.category].visible) return null;
-
-                // Calculate position: Leaflet CRS.Simple usually maps (y, x)
-                // If our data is x,y percentage or pixels, we need to convert.
-                // Assuming pins are stored as absolute pixels relative to the image for now, or we can convert %
-                // Let's assume the passed pins have x, y matching the image coordinate system
-                // Note: Leaflet uses [lat, lng] which corresponds to [y, x] in CRS.Simple
+                if (pin.category && categories[pin.category] && !categories[pin.category].visible) return null;
 
                 return (
                     <Marker
                         key={pin.id}
                         position={[pin.y, pin.x]}
+                        eventHandlers={{
+                            click: () => {
+                                if (onPinClick) onPinClick(pin);
+                            },
+                        }}
                     >
                         <Popup>
                             <div className="p-2">
                                 <h3 className="font-bold text-lg">{pin.title}</h3>
                                 <p className="text-sm text-gray-600">{pin.description}</p>
-                                <span className="inline-block mt-2 px-2 py-1 text-xs rounded bg-gray-200">
-                                    {categories[pin.category]?.name || pin.category}
-                                </span>
+                                {pin.category && (
+                                    <span className="inline-block mt-2 px-2 py-1 text-xs rounded bg-gray-200">
+                                        {categories[pin.category]?.name || pin.category}
+                                    </span>
+                                )}
+                                {isInteractive && (
+                                    <div className="mt-2 pt-2 border-t">
+                                        <button
+                                            onClick={() => onPopupAction && onPopupAction(pin)}
+                                            className="text-xs text-blue-500 hover:underline"
+                                        >
+                                            {pin.title.startsWith('✓') ? 'Mark as Unfound' : 'Mark as Found'}
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </Popup>
                     </Marker>
