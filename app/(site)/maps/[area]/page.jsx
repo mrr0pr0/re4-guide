@@ -30,6 +30,65 @@ export default function AreaMapPage({ params }) {
     }
 
     fetchMapData();
+
+    // Set up real-time subscription for pins
+    const pinsSubscription = supabase
+      .channel('pins-changes')
+      .on(
+        'postgres_changes',
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'pins'
+        },
+        (payload) => {
+          console.log('Pin change detected:', payload);
+          fetchMapData();
+        }
+      )
+      .subscribe();
+
+    // Set up real-time subscription for categories
+    const categoriesSubscription = supabase
+      .channel('categories-changes')
+      .on(
+        'postgres_changes',
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'pin_categories'
+        },
+        (payload) => {
+          console.log('Category change detected:', payload);
+          fetchMapData();
+        }
+      )
+      .subscribe();
+
+    // Set up real-time subscription for maps
+    const mapsSubscription = supabase
+      .channel('maps-changes')
+      .on(
+        'postgres_changes',
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'maps',
+          filter: `slug=eq.${area}`
+        },
+        (payload) => {
+          console.log('Map change detected:', payload);
+          fetchMapData();
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      pinsSubscription.unsubscribe();
+      categoriesSubscription.unsubscribe();
+      mapsSubscription.unsubscribe();
+    };
   }, [area]);
 
   const fetchMapData = async () => {
