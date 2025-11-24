@@ -23,8 +23,8 @@ export default async function WalkthroughPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-6">Walkthrough</h1>
-      <p className="text-gray-600 mb-8">
+      <h1 className="text-4xl font-bold mb-6 text-foreground">Walkthrough</h1>
+      <p className="text-muted-foreground mb-8">
         Complete chapter-by-chapter walkthrough for Resident Evil 4.
       </p>
 
@@ -34,11 +34,11 @@ export default async function WalkthroughPage() {
             <Link
               key={chapter.id}
               href={`/walkthrough/${chapter.slug}`}
-              className="p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
+              className="p-6 bg-card rounded-lg shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] border border-border"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-6">
                 {chapter.thumbnail_url && (
-                  <div className="relative w-24 h-24 rounded overflow-hidden">
+                  <div className="relative w-[200px] h-[200px] rounded overflow-hidden flex-shrink-0">
                     <Image
                       src={chapter.thumbnail_url}
                       alt={chapter.title}
@@ -48,20 +48,20 @@ export default async function WalkthroughPage() {
                     />
                   </div>
                 )}
-                <div>
-                  <h2 className="text-2xl font-semibold mb-2">
+                <div className="flex-1">
+                  <h2 className="text-2xl font-semibold mb-2 text-foreground">
                     Chapter {chapter.chapter_number}: {chapter.title}
                   </h2>
                   {chapter.description && (
-                    <p className="text-gray-600">{chapter.description}</p>
+                    <p className="text-muted-foreground">{chapter.description}</p>
                   )}
                 </div>
               </div>
             </Link>
           ))
         ) : (
-          <div className="p-6 bg-white rounded-lg shadow">
-            <p className="text-gray-600">
+          <div className="p-6 bg-card rounded-lg shadow-lg border border-border">
+            <p className="text-muted-foreground">
               No chapters available yet. Check back soon!
             </p>
           </div>
