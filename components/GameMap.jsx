@@ -7,7 +7,7 @@ import 'leaflet-defaulticon-compatibility';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import { useEffect, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Gem, ShoppingBag, Save, Skull, Key, MapPin } from 'lucide-react';
+import { Gem, ShoppingBag, Save, Skull, Key, MapPin, Watch, Heart, Flag, Box, KeyRound, FileText, Crosshair, Award } from 'lucide-react';
 
 // Fix for default marker icons in Next.js
 delete L.Icon.Default.prototype._getIconUrl;
@@ -43,6 +43,14 @@ const iconMap = {
     'Save': Save,
     'Skull': Skull,
     'Key': Key,
+    'Watch': Watch,
+    'Heart': Heart,
+    'Flag': Flag,
+    'Box': Box,
+    'KeyRound': KeyRound,
+    'FileText': FileText,
+    'Crosshair': Crosshair,
+    'Award': Award,
     'default': MapPin
 };
 
