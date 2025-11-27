@@ -60,7 +60,7 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
 
     // Convert categories array to object for GameMap if needed, 
     // but GameMap expects object with keys as slugs.
-    // Let's assume categories prop passed here is an array of objects {slug, name, color, visible}
+
     const categoriesMap = categories.reduce((acc, cat) => {
         acc[cat.slug] = { ...cat, visible: true };
         return acc;
