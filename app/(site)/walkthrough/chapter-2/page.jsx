@@ -16,13 +16,21 @@ export default function Chapter2Page() {
 
             <div className="relative w-full max-w-3xl h-80 rounded-lg shadow-lg mb-10">
                 <Image
-                    src="https://placehold.co/800x400/1a1a1a/red?text=Chapter+2+Valley"
+                    src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764363805/ch2-1_olqgc0.webp"
                     alt="The Valley"
                     fill
                     className="rounded-lg object-cover"
                     priority
                 />
             </div>
+        <div>
+          <Link
+            href="/maps/abanodnedfackch2"
+            className="bg-red-500 text-white px-4 py-2 rounded mb-6 hover:bg-red-600 inline-block"
+          >
+            View map
+          </Link>
+        </div>
 
             <div className="prose prose-invert max-w-none">
                 {/* Overview */}
@@ -34,7 +42,7 @@ export default function Chapter2Page() {
                 {/* Story Summary */}
                 <h2 className="text-red-500">Story Summary</h2>
                 <p>
-                    Leon and Luis are captured but manage to escape. Leon recovers his equipment and encounters the Merchant, a mysterious figure willing to trade weapons and upgrades. To open the gate to the Village Chief's Manor, Leon must brave the fortified Valley to find the Hexagonal Emblem.
+                    Leon and Luis are captured but manage to escape. Leon recovers his equipment and encounters the Merchant, a mysterious figure willing to trade weapons and upgrades. To open the gate to the Village Chief&apos;s Manor, Leon must brave the fortified Valley to find the Hexagonal Emblem.
                 </p>
 
                 {/* Objectives */}
@@ -44,14 +52,14 @@ export default function Chapter2Page() {
                     <li>Recover your gear</li>
                     <li>Meet the Merchant</li>
                     <li>Retrieve the Hexagonal Emblem from the Valley</li>
-                    <li>Unlock the Village Chief's Manor gate</li>
+                    <li>Unlock the Village Chief&apos;s Manor gate</li>
                 </ul>
 
                 {/* Enemies */}
                 <h2 className="text-red-500">Enemy Types Introduced</h2>
                 <h3>Dynamite Ganado</h3>
                 <p>
-                    These enemies throw sticks of dynamite that deal massive area damage. You can shoot the dynamite while it's in their hands to blow them up and damage nearby enemies.
+                    These enemies throw sticks of dynamite that deal massive area damage. You can shoot the dynamite while it&apos;s in their hands to blow them up and damage nearby enemies.
                 </p>
 
                 <hr className="my-6 border-red-500" />
@@ -95,7 +103,7 @@ export default function Chapter2Page() {
 
                 <h3>2. The Merchant</h3>
                 <p>
-                    Outside the factory, you'll meet the Merchant. Repair your knife and consider buying the Rifle if you have the funds—it's excellent for the upcoming Valley section.
+                    Outside the factory, you&apos;ll meet the Merchant. Repair your knife and consider buying the Rifle if you have the funds—it&apos;s excellent for the upcoming Valley section.
                 </p>
 
                 <h3>3. The Valley</h3>
@@ -104,23 +112,18 @@ export default function Chapter2Page() {
                 </p>
 
                 <hr className="my-6 border-red-500" />
-
-                <div>
-                    <Link
-                        href="/maps/village"
-                        className="bg-red-500 text-white px-4 py-2 rounded mb-6 hover:bg-red-600 inline-block"
-                    >
-                        View interactive map
-                    </Link>
-                </div>
+                
 
                 {/* Tips */}
-                <h2 className="text-red-500">Tips</h2>
+                
+                <h2 className="text-red-500 text-center">Tips</h2>
+                <div className="text-gray-700 text-center space-x-1">
                 <ul>
-                    <li>Shoot the dynamite in an enemy's hand for an instant kill.</li>
+                    <li>Shoot the dynamite in an enemy&apos;s hand for an instant kill.</li>
                     <li>The Rifle makes clearing the Valley much easier by picking off snipers.</li>
-                    <li>Don't forget to loot the area thoroughly after the fight.</li>
+                    <li>Don&apos;t forget to loot the area thoroughly after the fight.</li>
                 </ul>
+                </div>
             </div>
         </div>
     );
