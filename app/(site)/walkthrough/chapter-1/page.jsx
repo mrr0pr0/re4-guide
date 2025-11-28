@@ -8,14 +8,14 @@ export default function Chapter1_1Page() {
       <div className="mb-6">
         <h1 className="text-4xl font-bold mb-2 text-red-500">Chapter 1 – The Beginning: The Village</h1>
         <p className="text-lg text-gray-400 max-w-2xl">
-          Leon arrives in rural Spain to investigate the disappearance of the President’s daughter. This opening chapter sets the tone for the horror atmosphere of <em>Resident Evil 4 Remake</em>.
+          Leon arrives in rural Spain to investigate the disappearance of the President's daughter. This opening chapter sets the tone for the horror atmosphere of <em>Resident Evil 4 Remake</em>.
         </p>
       </div>
 
       {/* Main Image */}
       <div className="relative w-full max-w-3xl h-80 rounded-lg shadow-lg mb-10">
         <Image
-          src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360175/ch1-1_jquzzp.webp" // Replace with actual file
+          src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360175/ch1-1_jquzzp.webp"
           alt="Leon arriving at the village"
           fill
           className="rounded-lg object-cover"
@@ -29,14 +29,14 @@ export default function Chapter1_1Page() {
         <p>
           This chapter teaches core mechanics, introduces basic enemies, and culminates in the
           iconic Village Fight. Expect limited resources, tense encounters, and an introduction to
-          the game’s blend of action and survival horror.
+          the game's blend of action and survival horror.
         </p>
 
         {/* Story Summary */}
         <h2 className="text-red-500">Story Summary</h2>
         <p>
           Leon approaches the remote village while tracking the missing Ashley Graham. After
-          discovering signs of violence in the Hunter’s Lodge and confronting the first infected
+          discovering signs of violence in the Hunter's Lodge and confronting the first infected
           Ganado, Leon pushes toward the village square—only to be ambushed. After surviving the
           overwhelming attack and the mysterious ringing of the church bell, Leon proceeds toward
           the farm.
@@ -45,7 +45,7 @@ export default function Chapter1_1Page() {
         {/* Objectives */}
         <h2 className="text-red-500">Objectives</h2>
         <ul>
-          <li>Explore the Hunter’s Lodge</li>
+          <li>Explore the Hunter's Lodge</li>
           <li>Reach the Village Square</li>
           <li>Survive the Village Attack</li>
           <li>Proceed to the Farm</li>
@@ -62,7 +62,7 @@ export default function Chapter1_1Page() {
 
         <div className="relative w-full max-w-xl h-64 rounded-lg shadow-lg mb-6">
           <Image
-            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360377/ch1-1_z4thfc.jpg" // Replace with actual file
+            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360377/ch1-1_z4thfc.jpg"
             alt="Ganado example"
             fill
             className="rounded-lg object-cover"
@@ -82,7 +82,7 @@ export default function Chapter1_1Page() {
           <tbody>
             <tr>
               <td className="p-2 border border-gray-700">Handgun Ammo</td>
-              <td className="p-2 border border-gray-700">Hunter’s Lodge</td>
+              <td className="p-2 border border-gray-700">Hunter's Lodge</td>
               <td className="p-2 border border-gray-700">Useful early on</td>
             </tr>
             <tr>
@@ -101,14 +101,14 @@ export default function Chapter1_1Page() {
         {/* Walkthrough */}
         <h2 className="text-red-500">Walkthrough</h2>
 
-        <h3>1. Hunter’s Lodge</h3>
+        <h3>1. Hunter's Lodge</h3>
         <p>
           Search the lodge thoroughly. Investigate rooms to find resources. The first Ganado will
           attack once you descend into the basement—use parries or headshots to escape.
         </p>
         <div className="relative w-full max-w-xl h-64 mb-6 rounded-lg shadow-lg">
           <Image
-            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360477/ch1-3_sxhnlz.webp" // Replace with actual
+            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360477/ch1-3_sxhnlz.webp"
             alt="Hunter's Lodge interior"
             fill
             className="rounded-lg object-cover"
@@ -133,13 +133,13 @@ export default function Chapter1_1Page() {
 
         <div className="relative w-full max-w-xl h-64 mb-6 rounded-lg shadow-lg">
           <Image
-            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360726/ch1.4_jltvft.png" // Replace with actual
+            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360726/ch1.4_jltvft.png"
             alt="Village map diagram"
             fill
             className="rounded-lg object-cover"
           />
         </div>
-        
+
         <button className="bg-red-500 text-white px-4 py-2 rounded mb-6 hover:bg-red-600">
           View map
         </button>
@@ -185,19 +185,19 @@ export default function Chapter1_1Page() {
         <p>A few treasures can be found in drawers, attic spaces, and hanging containers.</p>
         <div className="relative w-full max-w-xl h-64 rounded-lg shadow-lg mb-6">
           <Image
-            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360981/ch1-5th_losljo.webp" // Replace with actual
+            src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764360981/ch1-5th_losljo.webp"
             alt="Treasure markers"
             fill
             className="rounded-lg object-cover"
           />
         </div>
         <div>
-            <link to="/app/(site)/treasures/chapter-1" />
-                <button className="bg-red-500 text-white px-4 py-2 rounded mb-6 hover:bg-red-600">
-                    View treasures
-                </button>
-            </link>
-        <div>
+          <Link to="/app/(site)/treasures/chapter-1">
+            <button className="bg-red-500 text-white px-4 py-2 rounded mb-6 hover:bg-red-600">
+              View treasures
+            </button>
+          </Link>
+        </div>
 
         {/* Tips */}
         <h2 className="text-red-500">Tips for New Players</h2>
