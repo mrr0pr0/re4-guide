@@ -4,8 +4,8 @@ export default function Chapter1_3Page() {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="mb-6">
-                <h1 className="text-4xl font-bold mb-2">Chapter 1-3</h1>
-                <p className="text-lg text-gray-600">The lake monster awaits.</p>
+                <h1 className="text-4xl font-bold mb-2">Chapter 10</h1>
+                <p className="text-lg text-gray-600">fight with salazar</p>
             </div>
 
             <div className="relative w-full max-w-2xl h-64 rounded-lg shadow-lg mb-8">
@@ -19,10 +19,9 @@ export default function Chapter1_3Page() {
             </div>
 
             <div className="prose max-w-none">
-                <h2>Del Lago</h2>
+                <h2>fill</h2>
                 <p>
-                    Leon must cross the lake to reach the church, but a giant creature
-                    stands in his way.
+                   y.
                 </p>
             </div>
         </div>
