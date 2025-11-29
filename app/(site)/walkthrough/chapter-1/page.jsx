@@ -74,6 +74,21 @@ export default function Chapter1_1Page() {
           />
         </div>
 
+        <hr className="my-2 border-red-500" />
+
+        <div className="mx-auto max-w-md">
+          <div className="text-gray-700 text-center space-x-1 bg-yellow-200 p-4 rounded-md">
+            <h2 className="text-red-500 text-center">Tips</h2>
+            <ul>
+              <li>Conserve ammo—use melee whenever possible</li>
+              <li>Parrying can save health and ammo</li>
+              <li>Break crates with the knife to avoid wasting bullets</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr className="my-2 border-red-500" />
+
         {/* Items Table */}
         <h2 className="text-red-500">Weapons & Items Found</h2>
         <table className="w-full border border-gray-700">
@@ -219,16 +234,9 @@ export default function Chapter1_1Page() {
           >
             View treasures
           </Link>
-        </div>
-
-        {/* Tips */}
-        <h2 className="text-red-500">Tips for New Players</h2>
-        <ul>
-          <li>Conserve ammo—use melee whenever possible</li>
-          <li>Parrying can save health and ammo</li>
-          <li>Break crates with the knife to avoid wasting bullets</li>
-        </ul>
+        </div>        
       </div>
     </div>
+
   );
 }

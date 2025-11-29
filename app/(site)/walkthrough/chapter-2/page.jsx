@@ -14,7 +14,7 @@ export default function Chapter2Page() {
 
             <hr className="my-6 border-red-500" />
 
-            <div className="relative w-full max-w-3xl h-80 rounded-lg shadow-lg mb-10">
+            <div className="relative w-full max-w-3xl h-80 rounded-lg shadow-lg mb-1">
                 <Image
                     src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764363805/ch2-1_olqgc0.webp"
                     alt="The Valley"
@@ -62,6 +62,19 @@ export default function Chapter2Page() {
                     These enemies throw sticks of dynamite that deal massive area damage. You can shoot the dynamite while it&apos;s in their hands to blow them up and damage nearby enemies.
                 </p>
 
+    {/* Tips */}
+                <div className="mx-auto max-w-md">
+                    <div className="text-gray-700 text-center space-x-1 bg-yellow-200 p-4 rounded-md">
+                        <h2 className="text-red-500 text-center">Tips</h2>
+                            <ul>
+                                <li>Shoot the dynamite in an enemy&apos;s hand for an instant kill.</li>
+                                <li>The Rifle makes clearing the Valley much easier by picking off snipers.</li>
+                                <li>Don&apos;t forget to loot the area thoroughly after the fight.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+            
                 <hr className="my-6 border-red-500" />
 
                 {/* Items Table */}
@@ -114,17 +127,7 @@ export default function Chapter2Page() {
                 <hr className="my-6 border-red-500" />
                 
 
-                {/* Tips */}
-                
-                <h2 className="text-red-500 text-center">Tips</h2>
-                <div className="text-gray-700 text-center space-x-1">
-                <ul>
-                    <li>Shoot the dynamite in an enemy&apos;s hand for an instant kill.</li>
-                    <li>The Rifle makes clearing the Valley much easier by picking off snipers.</li>
-                    <li>Don&apos;t forget to loot the area thoroughly after the fight.</li>
-                </ul>
-                </div>
-            </div>
-        </div>
+
+            </div>        </div>
     );
 }
