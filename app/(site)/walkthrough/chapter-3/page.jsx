@@ -28,19 +28,19 @@ export default function Chapter3Page() {
                 {/* Overview */}
                 <h2 className="text-red-500">Overview</h2>
                 <p>
-                    This chapter focuses on atmosphere and the first major boss fight. You will navigate through the Village Chief's Manor, fight through the Quarry, and eventually take a boat out onto the lake to face the guardian, Del Lago.
+                    This chapter focuses on atmosphere and the first major boss fight. You will navigate through the Village Chief&apos;s Manor, fight through the Quarry, and eventually take a boat out onto the lake to face the guardian, Del Lago.
                 </p>
 
                 {/* Story Summary */}
                 <h2 className="text-red-500">Story Summary</h2>
                 <p>
-                    Leon enters the Village Chief's Manor but is nearly killed by Mendez. After recovering, he heads towards the lake to find a boat. The cult has unleashed Del Lago, a massive mutated salamander, to stop him.
+                    Leon enters the Village Chief&apos;s Manor but is nearly killed by Mendez. After recovering, he heads towards the lake to find a boat. The cult has unleashed Del Lago, a massive mutated salamander, to stop him.
                 </p>
 
                 {/* Objectives */}
                 <h2 className="text-red-500">Objectives</h2>
                 <ul>
-                    <li>Explore the Village Chief's Manor</li>
+                    <li>Explore the Village Chief&apos;s Manor</li>
                     <li>Head to the Church (locked)</li>
                     <li>Pass through the Quarry</li>
                     <li>Find boat fuel at the Fish Farm</li>
@@ -73,7 +73,7 @@ export default function Chapter3Page() {
                     <tbody>
                         <tr>
                             <td className="p-2 border border-gray-700">Insignia Key</td>
-                            <td className="p-2 border border-gray-700">Village Chief's Manor</td>
+                            <td className="p-2 border border-gray-700">Village Chief&apos;s Manor</td>
                             <td className="p-2 border border-gray-700">Opens village gates</td>
                         </tr>
                         <tr>
@@ -87,14 +87,14 @@ export default function Chapter3Page() {
                 {/* Walkthrough */}
                 <h2 className="text-red-500">Walkthrough</h2>
 
-                <h3>1. Village Chief's Manor</h3>
+                <h3>1. Village Chief&apos;s Manor</h3>
                 <p>
-                    Solve the crystal marble puzzle on the second floor to open the bedroom. Inside, you'll find the Insignia Key.
+                    Solve the crystal marble puzzle on the second floor to open the bedroom. Inside, you&apos;ll find the Insignia Key.
                 </p>
 
                 <h3>2. The Quarry & Fish Farm</h3>
                 <p>
-                    On the way to the lake, you'll pass through the Quarry. Watch out for the Colmillos. In the Fish Farm, you need to find the Boat Fuel. This area is dense with enemies and water, making movement slower.
+                    On the way to the lake, you&lsquo;ll pass through the Quarry. Watch out for the Colmillos. In the Fish Farm, you need to find the Boat Fuel. This area is dense with enemies and water, making movement slower.
                 </p>
 
                 <h3>3. Del Lago Boss Fight</h3>
@@ -102,7 +102,7 @@ export default function Chapter3Page() {
                     You are on a small boat armed with infinite harpoons.
                 </p>
                 <ul>
-                    <li>Throw harpoons at the monster's body when it surfaces.</li>
+                    <li>Throw harpoons at the monster&apos;s body when it surfaces.</li>
                     <li>Steer the boat to avoid floating debris.</li>
                     <li>When it charges you with its mouth open, land a hit in the mouth to stop it.</li>
                 </ul>
@@ -121,9 +121,9 @@ export default function Chapter3Page() {
                 {/* Tips */}
                 <h2 className="text-red-500">Tips</h2>
                 <ul>
-                    <li>Don't shoot the water at the dock before the fight (or do, for a surprise).</li>
+                    <li>Don&apos;t shoot the water at the dock before the fight (or do, for a surprise).</li>
                     <li>In the Fish Farm, use the walkways to funnel enemies.</li>
-                    <li>Upgrade your harpoon throwing speed by... well, you can't, just aim true!</li>
+                    <li>Upgrade your harpoon throwing speed by... well, you can&apos;t, just aim true!</li>
                 </ul>
             </div>
         </div>
