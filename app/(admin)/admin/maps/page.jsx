@@ -13,6 +13,13 @@ export default function AdminMapsPage() {
         fetchMaps();
     }, []);
 
+    // 🔥 Re-fetch when returning to page
+    useEffect(() => {
+        const handleFocus = () => fetchMaps();
+        window.addEventListener('focus', handleFocus);
+        return () => window.removeEventListener('focus', handleFocus);
+    }, []);
+
     const fetchMaps = async () => {
         try {
             const { data, error } = await supabase
@@ -53,7 +60,6 @@ export default function AdminMapsPage() {
                         className="group block border rounded-lg overflow-hidden hover:border-primary transition-colors"
                     >
                         <div className="aspect-video bg-muted relative">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={map.image_url}
                                 alt={map.title}

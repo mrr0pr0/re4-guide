@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { Plus, Save, Trash2, X } from 'lucide-react';
+import { Plus, Save, Trash2, X, Check } from 'lucide-react';
 
 const GameMap = dynamic(() => import('./GameMap'), {
     ssr: false,
@@ -13,13 +13,23 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
     const [pins, setPins] = useState(initialPins);
     const [selectedPin, setSelectedPin] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [addMode, setAddMode] = useState(false);
+    const pinCounterRef = useRef(0);
+
+    // Sync pins when initialPins change (after save)
+    useEffect(() => {
+        setPins(initialPins);
+    }, [initialPins]);
 
     const handleMapClick = (e) => {
-        if (selectedPin) return; // Don't add if editing
+        // Only add new pin if in add mode
+        if (!addMode) return;
 
         const { lat, lng } = e.latlng;
+        pinCounterRef.current += 1;
+        
         const newPin = {
-            id: `temp-${Date.now()}`,
+            id: `temp-${pinCounterRef.current}`,
             x: lng,
             y: lat,
             title: 'New Pin',
@@ -31,6 +41,7 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
         setPins([...pins, newPin]);
         setSelectedPin(newPin);
         setIsEditing(true);
+        // Keep add mode active so user can continue adding pins
     };
 
     const handlePinClick = (pin) => {
@@ -54,13 +65,26 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
         setIsEditing(false);
     };
 
-    const saveChanges = () => {
-        onSave(pins);
+    const closeEditPanel = () => {
+        setSelectedPin(null);
+        setIsEditing(false);
     };
 
-    // Convert categories array to object for GameMap if needed, 
-    // but GameMap expects object with keys as slugs.
+    const saveChanges = async () => {
+        await onSave(pins);
+        // Don't close add mode or edit panel, let user continue working
+    };
 
+    const toggleAddMode = () => {
+        setAddMode(!addMode);
+        if (addMode) {
+            // Exiting add mode, close edit panel
+            setIsEditing(false);
+            setSelectedPin(null);
+        }
+    };
+
+    // Convert categories array to object for GameMap
     const categoriesMap = categories.reduce((acc, cat) => {
         acc[cat.slug] = { ...cat, visible: true };
         return acc;
@@ -72,13 +96,37 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
                 <h2 className="text-xl font-bold">Map Builder</h2>
                 <div className="flex gap-2">
                     <button
+                        onClick={toggleAddMode}
+                        className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
+                            addMode 
+                                ? 'bg-green-600 text-white hover:bg-green-700' 
+                                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                        }`}
+                    >
+                        {addMode ? (
+                            <>
+                                <Check size={16} /> Adding Pins (Click to Stop)
+                            </>
+                        ) : (
+                            <>
+                                <Plus size={16} /> Add Pin Mode
+                            </>
+                        )}
+                    </button>
+                    <button
                         onClick={saveChanges}
                         className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
                     >
-                        <Save size={16} /> Save Pins
+                        <Save size={16} /> Save All Pins
                     </button>
                 </div>
             </div>
+
+            {addMode && (
+                <div className="bg-green-600 text-white px-4 py-2 text-sm font-medium">
+                    🎯 Click anywhere on the map to add a new pin. Click &quot;Adding Pins&quot; button to exit add mode.
+                </div>
+            )}
 
             <div className="flex-1 flex overflow-hidden">
                 <div className="flex-1 relative bg-gray-950">
@@ -96,7 +144,7 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
                     <div className="w-80 bg-card border-l p-4 overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-bold">Edit Pin</h3>
-                            <button onClick={() => setIsEditing(false)} className="p-1 hover:bg-accent rounded">
+                            <button onClick={closeEditPanel} className="p-1 hover:bg-accent rounded">
                                 <X size={16} />
                             </button>
                         </div>
