@@ -35,10 +35,7 @@ export default async function MerchantRequestsPage() {
                 <div className="absolute inset-0 bg-[url('/images/Background.jpg')] opacity-10"></div>
                 <div className="container mx-auto px-4 py-16 relative">
                     <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-2 bg-red-950/40 border border-red-800/50 rounded-full px-4 py-2 mb-6">
-                            <Gift className="w-4 h-4 text-red-400" />
-                            <span className="text-sm font-medium text-red-300">Complete Guide</span>
-                        </div>
+
                         <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent">
                             Merchant Requests
                         </h1>
