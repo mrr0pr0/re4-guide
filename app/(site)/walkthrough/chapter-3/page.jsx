@@ -16,7 +16,7 @@ export default function Chapter3Page() {
 
             <div className="relative w-full max-w-3xl h-80 rounded-lg shadow-lg mb-10">
                 <Image
-                    src="https://placehold.co/800x400/1a1a1a/red?text=Chapter+3+Lake"
+                    src="https://res.cloudinary.com/dxeuo6xas/image/upload/v1764364686/ch3.1_r1wvmq.jpg"
                     alt="The Lake"
                     fill
                     className="rounded-lg object-cover"
@@ -94,7 +94,7 @@ export default function Chapter3Page() {
 
                 <h3>2. The Quarry & Fish Farm</h3>
                 <p>
-                    On the way to the lake, you&lsquo;ll pass through the Quarry. Watch out for the Colmillos. In the Fish Farm, you need to find the Boat Fuel. This area is dense with enemies and water, making movement slower.
+                    On the way to the lake, you&apos;ll pass through the Quarry. Watch out for the Colmillos. In the Fish Farm, you need to find the Boat Fuel. This area is dense with enemies and water, making movement slower.
                 </p>
 
                 <h3>3. Del Lago Boss Fight</h3>

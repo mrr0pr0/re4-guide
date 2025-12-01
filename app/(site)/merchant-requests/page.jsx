@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
+import { MapPin, Gift, BookOpen, Search } from "lucide-react";
+import MerchantRequestsClient from "./MerchantRequestsClient";
 
-export const revalidate = 0; // Disable cache for debugging
+export const revalidate = 0;
 
 async function getMerchantRequests() {
     try {
@@ -27,70 +29,58 @@ export default async function MerchantRequestsPage() {
     const { requests, error } = await getMerchantRequests();
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-4xl font-bold mb-6">Merchant Requests</h1>
-            <p className="text-gray-600 mb-8">
-                Complete list of Merchant Requests, their locations, and rewards.
-            </p>
-
-            {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-                    <strong className="font-bold">Error loading requests: </strong>
-                    <span className="block sm:inline">{error.message || JSON.stringify(error)}</span>
-                    <p className="mt-2 text-sm">Check your Supabase connection and RLS policies.</p>
-                </div>
-            )}
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {requests.length > 0 ? (
-                    requests.map((req) => (
-                        <div
-                            key={req.id}
-                            className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden flex flex-col"
-                        >
-                            {req.image_url && (
-                                <div className="relative w-full h-48">
-                                    <Image
-                                        src={req.image_url}
-                                        alt={req.name}
-                                        fill
-                                        style={{ objectFit: "cover" }}
-                                        priority
-                                    />
-                                </div>
-                            )}
-
-                            <div className="p-4 flex-grow">
-                                <h2 className="text-xl font-semibold mb-2">{req.name}</h2>
-                                <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
-                                    {req.chapter && <span>Chapter {req.chapter}</span>}
-                                    {req.reward && <span className="text-amber-600 font-medium">{req.reward}</span>}
-                                </div>
-
-                                {req.description && (
-                                    <p className="text-gray-600 text-sm mb-4">
-                                        {req.description}
-                                    </p>
-                                )}
-
-                                {req.solution && (
-                                    <div className="mt-auto pt-3 border-t border-gray-100">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Solution Hint:</p>
-                                        <p className="text-sm text-gray-700">{req.solution}</p>
-                                    </div>
-                                )}
+        <div className="min-h-screen bg-gradient-to-b from-[#0a0a0a] via-[#121212] to-[#1a1a1a]">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-red-950/20 via-red-900/10 to-red-950/20 border-b border-red-900/30">
+                <div className="absolute inset-0 bg-[url('/images/Background.jpg')] opacity-10"></div>
+                <div className="container mx-auto px-4 py-16 relative">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <div className="inline-flex items-center gap-2 bg-red-950/40 border border-red-800/50 rounded-full px-4 py-2 mb-6">
+                            <Gift className="w-4 h-4 text-red-400" />
+                            <span className="text-sm font-medium text-red-300">Complete Guide</span>
+                        </div>
+                        <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent">
+                            Merchant Requests
+                        </h1>
+                        <p className="text-xl text-gray-400 mb-8 leading-relaxed">
+                            Complete all merchant requests to unlock exclusive rewards and upgrades. 
+                            Track your progress and find exact locations on our interactive maps.
+                        </p>
+                        <div className="flex flex-wrap gap-4 justify-center text-sm">
+                            <div className="flex items-center gap-2 bg-[#1e1e1e] border border-gray-800 rounded-lg px-4 py-2">
+                                <BookOpen className="w-4 h-4 text-amber-500" />
+                                <span className="text-gray-300">{requests.length} Total Requests</span>
+                            </div>
+                            <div className="flex items-center gap-2 bg-[#1e1e1e] border border-gray-800 rounded-lg px-4 py-2">
+                                <MapPin className="w-4 h-4 text-red-500" />
+                                <span className="text-gray-300">Interactive Map Links</span>
                             </div>
                         </div>
-                    ))
-                ) : (
-                    !error && (
-                        <div className="col-span-full p-6 bg-white rounded-lg shadow">
-                            <p className="text-gray-600">
-                                No merchant requests available yet.
-                            </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 py-12">
+                {error && (
+                    <div className="max-w-4xl mx-auto mb-8 bg-red-950/30 border border-red-500/50 rounded-lg p-6 backdrop-blur-sm">
+                        <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                                <span className="text-red-400 text-xl">⚠</span>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-red-300 font-semibold mb-1">Error Loading Requests</h3>
+                                <p className="text-red-200/80 text-sm mb-2">
+                                    {error.message || JSON.stringify(error)}
+                                </p>
+                                <p className="text-red-300/60 text-xs">
+                                    Check your Supabase connection and RLS policies.
+                                </p>
+                            </div>
                         </div>
-                    )
+                    </div>
                 )}
+
+                <MerchantRequestsClient requests={requests} />
             </div>
         </div>
     );

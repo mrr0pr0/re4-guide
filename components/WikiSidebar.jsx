@@ -38,6 +38,12 @@ export default function WikiSidebar() {
                     >
                         Interactive Maps
                     </Link>
+                    <Link
+                        href="/merchant-requests"
+                        className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+                    >
+                        Merchants & Requests
+                    </Link>
                 </nav>
             </div>
         </aside>
