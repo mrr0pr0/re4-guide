@@ -13,21 +13,22 @@ export default function MapsIndexPage() {
     fetchMaps();
   }, []);
 
-  const fetchMaps = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('maps')
-        .select('*')
-        .order('order_index', { ascending: true });
+const fetchMaps = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('maps')
+      .select('*')
+      .eq('show', true) // filter by show = true
+      .order('order_index', { ascending: true });
 
-      if (error) throw error;
-      setMaps(data || []);
-    } catch (error) {
-      console.error('Error fetching maps:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (error) throw error;
+    setMaps(data || []);
+  } catch (error) {
+    console.error('Error fetching maps:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (loading) {
     return <div className="flex items-center justify-center h-[calc(100vh-3.5rem)]"><Loader2 className="animate-spin" /></div>;
