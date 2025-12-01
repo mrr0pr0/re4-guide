@@ -27,14 +27,14 @@ export default async function MerchantRequestsPage() {
     const { requests, error } = await getMerchantRequests();
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-4xl font-bold mb-6">Merchant Requests</h1>
-            <p className="text-gray-600 mb-8">
+        <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen text-gray-200">
+            <h1 className="text-4xl font-bold mb-6 text-red-500">Merchant Requests</h1>
+            <p className="text-gray-400 mb-8 text-lg">
                 Complete list of Merchant Requests, their locations, and rewards.
             </p>
 
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+                <div className="bg-red-900/30 border border-red-500 text-red-200 px-4 py-3 rounded relative mb-6" role="alert">
                     <strong className="font-bold">Error loading requests: </strong>
                     <span className="block sm:inline">{error.message || JSON.stringify(error)}</span>
                     <p className="mt-2 text-sm">Check your Supabase connection and RLS policies.</p>
@@ -46,10 +46,10 @@ export default async function MerchantRequestsPage() {
                     requests.map((req) => (
                         <div
                             key={req.id}
-                            className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden flex flex-col"
+                            className="bg-[#1e1e1e] border border-gray-800 rounded-lg shadow-lg hover:shadow-xl hover:border-red-900 transition-all overflow-hidden flex flex-col"
                         >
                             {req.image_url && (
-                                <div className="relative w-full h-48">
+                                <div className="relative w-full h-48 border-b border-gray-800">
                                     <Image
                                         src={req.image_url}
                                         alt={req.name}
@@ -60,32 +60,44 @@ export default async function MerchantRequestsPage() {
                                 </div>
                             )}
 
-                            <div className="p-4 flex-grow">
-                                <h2 className="text-xl font-semibold mb-2">{req.name}</h2>
-                                <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
-                                    {req.chapter && <span>Chapter {req.chapter}</span>}
-                                    {req.reward && <span className="text-amber-600 font-medium">{req.reward}</span>}
+                            <div className="p-5 flex-grow flex flex-col">
+                                <h2 className="text-xl font-bold mb-2 text-gray-100">{req.name}</h2>
+                                <div className="flex justify-between items-center text-sm mb-4">
+                                    {req.chapter && <span className="text-gray-400 bg-gray-800 px-2 py-1 rounded">Chapter {req.chapter}</span>}
+                                    {req.reward && <span className="text-amber-500 font-medium">{req.reward}</span>}
                                 </div>
 
                                 {req.description && (
-                                    <p className="text-gray-600 text-sm mb-4">
+                                    <p className="text-gray-400 text-sm mb-4 flex-grow">
                                         {req.description}
                                     </p>
                                 )}
 
-                                {req.solution && (
-                                    <div className="mt-auto pt-3 border-t border-gray-100">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Solution Hint:</p>
-                                        <p className="text-sm text-gray-700">{req.solution}</p>
-                                    </div>
-                                )}
+                                <div className="mt-auto space-y-3">
+                                    {req.solution && (
+                                        <div className="pt-3 border-t border-gray-800">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Solution Hint:</p>
+                                            <p className="text-sm text-gray-300">{req.solution}</p>
+                                        </div>
+                                    )}
+
+                                    {/* Link to Interactive Map if map_slug is present */}
+                                    {req.map_slug && (
+                                        <Link
+                                            href={`/maps/${req.map_slug}`}
+                                            className="block w-full text-center bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-4 rounded transition-colors"
+                                        >
+                                            View on Map
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))
                 ) : (
                     !error && (
-                        <div className="col-span-full p-6 bg-white rounded-lg shadow">
-                            <p className="text-gray-600">
+                        <div className="col-span-full p-8 bg-[#1e1e1e] rounded-lg border border-gray-800 text-center">
+                            <p className="text-gray-400 text-lg">
                                 No merchant requests available yet.
                             </p>
                         </div>
