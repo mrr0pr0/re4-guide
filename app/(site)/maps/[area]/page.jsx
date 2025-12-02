@@ -19,6 +19,7 @@ export default function AreaMapPage({ params }) {
   const [mapData, setMapData] = useState(null);
   const [pins, setPins] = useState([]);
   const [categories, setCategories] = useState({});
+  const [allMaps, setAllMaps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [foundPins, setFoundPins] = useState([]);
 
@@ -105,7 +106,15 @@ export default function AreaMapPage({ params }) {
       if (mapError) throw mapError;
       setMapData(map);
 
-      // 2. Fetch Categories
+      // 2. Fetch All Maps (for teleport functionality)
+      const { data: mapsData, error: mapsError } = await supabase
+        .from('maps')
+        .select('id, title, slug');
+
+      if (mapsError) throw mapsError;
+      setAllMaps(mapsData || []);
+
+      // 3. Fetch Categories
       const { data: catsData, error: catError } = await supabase
         .from('pin_categories')
         .select('*');
@@ -119,7 +128,7 @@ export default function AreaMapPage({ params }) {
       }, {});
       setCategories(catsObj);
 
-      // 3. Fetch Pins
+      // 4. Fetch Pins
       const { data: pinsData, error: pinsError } = await supabase
         .from('pins')
         .select('*')
@@ -150,7 +159,9 @@ export default function AreaMapPage({ params }) {
   };
 
   const handlePinClick = (pin) => {
-    // Toggle found status
+    // Toggle found status (only for non-teleport pins)
+    if (pin.category === 'teleport') return;
+
     const isFound = foundPins.includes(pin.id);
     let newFound;
 
@@ -174,7 +185,7 @@ export default function AreaMapPage({ params }) {
 
   const displayPins = pins.map(p => ({
     ...p,
-    title: foundPins.includes(p.id) ? `✓ ${p.title}` : p.title
+    title: (p.category !== 'teleport' && foundPins.includes(p.id)) ? `✓ ${p.title}` : p.title
   }));
 
   return (
@@ -189,6 +200,7 @@ export default function AreaMapPage({ params }) {
           imageUrl={mapData.image_url}
           pins={displayPins}
           categories={categories}
+          allMaps={allMaps}
           onPopupAction={handlePinClick}
           isInteractive={true} // Enable the "Mark as Found" button in popup
         />

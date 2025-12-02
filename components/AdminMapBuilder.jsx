@@ -2,18 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { Plus, Save, Trash2, X, Check } from 'lucide-react';
+import { Save, Trash2, X } from 'lucide-react';
 
 const GameMap = dynamic(() => import('./GameMap'), {
     ssr: false,
     loading: () => <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white">Loading Map Engine...</div>
 });
 
-export default function AdminMapBuilder({ imageUrl, initialPins = [], categories = [], onSave }) {
+export default function AdminMapBuilder({ imageUrl, initialPins = [], categories = [], onSave, allMaps = [] }) {
     const [pins, setPins] = useState(initialPins);
     const [selectedPin, setSelectedPin] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [addMode, setAddMode] = useState(false);
     const pinCounterRef = useRef(0);
 
     // Sync pins when initialPins change (after save)
@@ -22,9 +21,7 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
     }, [initialPins]);
 
     const handleMapClick = (e) => {
-        // Only add new pin if in add mode
-        if (!addMode) return;
-
+        // Always add new pin when clicking empty space on map
         const { lat, lng } = e.latlng;
         pinCounterRef.current += 1;
         
@@ -35,13 +32,13 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
             title: 'New Pin',
             description: '',
             category: categories[0]?.slug || 'treasure',
+            target_map_id: null,
             isNew: true
         };
 
         setPins([...pins, newPin]);
         setSelectedPin(newPin);
         setIsEditing(true);
-        // Keep add mode active so user can continue adding pins
     };
 
     const handlePinClick = (pin) => {
@@ -72,16 +69,7 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
 
     const saveChanges = async () => {
         await onSave(pins);
-        // Don't close add mode or edit panel, let user continue working
-    };
-
-    const toggleAddMode = () => {
-        setAddMode(!addMode);
-        if (addMode) {
-            // Exiting add mode, close edit panel
-            setIsEditing(false);
-            setSelectedPin(null);
-        }
+        // Don't close edit panel, let user continue working
     };
 
     // Convert categories array to object for GameMap
@@ -90,43 +78,27 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
         return acc;
     }, {});
 
+    // Check if selected pin is a teleport pin
+    const isTeleportPin = selectedPin?.category === 'teleport';
+
     return (
         <div className="flex flex-col h-full">
             <div className="flex justify-between items-center p-4 bg-card border-b">
-                <h2 className="text-xl font-bold">Map Builder</h2>
+                <div>
+                    <h2 className="text-xl font-bold">Map Builder</h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        Click anywhere on the map to add a pin. Click existing pins to edit them.
+                    </p>
+                </div>
                 <div className="flex gap-2">
-                    <button
-                        onClick={toggleAddMode}
-                        className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
-                            addMode 
-                                ? 'bg-green-600 text-white hover:bg-green-700' 
-                                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                        }`}
-                    >
-                        {addMode ? (
-                            <>
-                                <Check size={16} /> Adding Pins (Click to Stop)
-                            </>
-                        ) : (
-                            <>
-                                <Plus size={16} /> Add Pin Mode
-                            </>
-                        )}
-                    </button>
                     <button
                         onClick={saveChanges}
                         className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
                     >
-                        <Save size={16} /> Save All Pins
+                        <Save size={16} /> Save All Pins ({pins.length})
                     </button>
                 </div>
             </div>
-
-            {addMode && (
-                <div className="bg-green-600 text-white px-4 py-2 text-sm font-medium">
-                    🎯 Click anywhere on the map to add a new pin. Click &quot;Adding Pins&quot; button to exit add mode.
-                </div>
-            )}
 
             <div className="flex-1 flex overflow-hidden">
                 <div className="flex-1 relative bg-gray-950">
@@ -172,6 +144,29 @@ export default function AdminMapBuilder({ imageUrl, initialPins = [], categories
                                     ))}
                                 </select>
                             </div>
+
+                            {isTeleportPin && (
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">
+                                        Target Map (Teleport Destination)
+                                    </label>
+                                    <select
+                                        value={selectedPin.target_map_id || ''}
+                                        onChange={(e) => updateSelectedPin({ target_map_id: e.target.value || null })}
+                                        className="w-full p-2 rounded border bg-background"
+                                    >
+                                        <option value="">-- Select a map --</option>
+                                        {allMaps.map(map => (
+                                            <option key={map.id} value={map.id}>
+                                                {map.title} ({map.slug})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        When users click this pin, they will be redirected to the selected map.
+                                    </p>
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-medium mb-1">Description</label>

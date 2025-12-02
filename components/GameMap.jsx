@@ -6,8 +6,9 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Gem, ShoppingBag, Save, Skull, Key, MapPin, Watch, Heart, Flag, Box, KeyRound, FileText, Crosshair, Award } from 'lucide-react';
+import { Gem, ShoppingBag, Save, Skull, Key, MapPin, Watch, Heart, Flag, Box, KeyRound, FileText, Crosshair, Award, ArrowRightCircle } from 'lucide-react';
 
 // Fix for default marker icons in Next.js
 delete L.Icon.Default.prototype._getIconUrl;
@@ -51,6 +52,7 @@ const iconMap = {
     'FileText': FileText,
     'Crosshair': Crosshair,
     'Award': Award,
+    'ArrowRightCircle': ArrowRightCircle,
     'default': MapPin
 };
 
@@ -83,8 +85,9 @@ const createCustomIcon = (category) => {
     });
 };
 
-export default function GameMap({ imageUrl, pins = [], categories = {}, onMapClick, onPinClick, onPopupAction, isInteractive = false }) {
+export default function GameMap({ imageUrl, pins = [], categories = {}, onMapClick, onPinClick, onPopupAction, isInteractive = false, allMaps = [] }) {
     const [bounds, setBounds] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         if (imageUrl) {
@@ -98,6 +101,12 @@ export default function GameMap({ imageUrl, pins = [], categories = {}, onMapCli
             };
         }
     }, [imageUrl]);
+
+    const handleTeleportClick = (pin, targetMapSlug) => {
+        if (targetMapSlug) {
+            router.push(`/maps/${targetMapSlug}`);
+        }
+    };
 
     if (!bounds) {
         return <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white">Loading Map...</div>;
@@ -125,6 +134,7 @@ export default function GameMap({ imageUrl, pins = [], categories = {}, onMapCli
 
                 const categoryData = categories[pin.category];
                 const customIcon = createCustomIcon(categoryData);
+                const isTeleportPin = pin.category === 'teleport';
 
                 return (
                     <Marker
@@ -140,12 +150,10 @@ export default function GameMap({ imageUrl, pins = [], categories = {}, onMapCli
                         <Popup>
                             <div className="p-2 min-w-[200px]">
                                 <h3 className="font-bold text-lg flex items-center gap-2">
-                                    {categoryData?.icon && iconMap[categoryData.icon] && (
-                                        (() => {
-                                            const Icon = iconMap[categoryData.icon];
-                                            return <Icon size={16} />;
-                                        })()
-                                    )}
+                                    {categoryData?.icon && iconMap[categoryData.icon] && (() => {
+                                        const Icon = iconMap[categoryData.icon];
+                                        return <Icon size={16} />;
+                                    })()}
                                     {pin.title}
                                 </h3>
                                 <p className="text-sm text-gray-600 my-2">{pin.description || 'No description.'}</p>
@@ -158,16 +166,34 @@ export default function GameMap({ imageUrl, pins = [], categories = {}, onMapCli
                                     </span>
                                 )}
                                 {isInteractive && (
-                                    <div className="mt-3 pt-2 border-t flex justify-end">
-                                        <button
-                                            onClick={() => onPopupAction && onPopupAction(pin)}
-                                            className={`text-xs px-3 py-1 rounded border transition-colors ${pin.title.startsWith('✓')
-                                                    ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200'
-                                                    : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
-                                                }`}
-                                        >
-                                            {pin.title.startsWith('✓') ? '✓ Found' : 'Mark as Found'}
-                                        </button>
+                                    <div className="mt-3 pt-2 border-t flex justify-end gap-2">
+                                        {isTeleportPin && pin.target_map_id && (() => {
+                                            // Find the target map slug from allMaps or fetch it
+                                            const targetMap = allMaps?.find(m => m.id === pin.target_map_id);
+                                            if (targetMap) {
+                                                return (
+                                                    <button
+                                                        onClick={() => handleTeleportClick(pin, targetMap.slug)}
+                                                        className="text-xs px-3 py-1 rounded border bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200 flex items-center gap-1"
+                                                    >
+                                                        <ArrowRightCircle size={12} />
+                                                        Go to {targetMap.title}
+                                                    </button>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
+                                        {!isTeleportPin && (
+                                            <button
+                                                onClick={() => onPopupAction && onPopupAction(pin)}
+                                                className={`text-xs px-3 py-1 rounded border transition-colors ${pin.title.startsWith('✓')
+                                                        ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200'
+                                                        : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
+                                                    }`}
+                                            >
+                                                {pin.title.startsWith('✓') ? '✓ Found' : 'Mark as Found'}
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                             </div>

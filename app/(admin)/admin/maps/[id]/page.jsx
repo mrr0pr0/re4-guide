@@ -23,17 +23,24 @@ export default function AdminMapEditorPage({ params }) {
 
     const [pins, setPins] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [allMaps, setAllMaps] = useState([]);
     const [loading, setLoading] = useState(!isNew);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         fetchCategories();
+        fetchAllMaps();
         if (!isNew) fetchMapData();
     }, [id]);
 
     const fetchCategories = async () => {
         const { data } = await supabase.from('pin_categories').select('*');
         if (data) setCategories(data);
+    };
+
+    const fetchAllMaps = async () => {
+        const { data } = await supabase.from('maps').select('id, title, slug').order('title');
+        if (data) setAllMaps(data);
     };
 
     const fetchMapData = async () => {
@@ -102,12 +109,16 @@ export default function AdminMapEditorPage({ params }) {
             }
 
             // SEPARATE NEW PINS FROM EXISTING PINS
+            // FIX: Supabase returns UUIDs as strings, not numbers
+            // New pins have IDs starting with 'temp-', existing pins have UUID strings
             const newPins = updatedPins.filter(p => {
                 const isTemp = typeof p.id === 'string' && p.id.startsWith('temp-');
                 console.log(`Pin ${p.id} is ${isTemp ? 'NEW' : 'EXISTING'}`);
                 return isTemp;
             });
-            const existingPins = updatedPins.filter(p => typeof p.id === 'number');
+            const existingPins = updatedPins.filter(p => 
+                typeof p.id === 'string' && !p.id.startsWith('temp-')
+            );
 
             console.log(`Found ${newPins.length} new pins and ${existingPins.length} existing pins`);
 
@@ -125,7 +136,8 @@ export default function AdminMapEditorPage({ params }) {
                         description: p.description || '',
                         x: p.x,
                         y: p.y,
-                        category_id: categoryId
+                        category_id: categoryId,
+                        target_map_id: p.target_map_id || null
                     };
                 });
 
@@ -155,7 +167,7 @@ export default function AdminMapEditorPage({ params }) {
                 console.log('Updating existing pins...');
                 for (const pin of existingPins) {
                     const categoryId = categories.find(c => c.slug === pin.category)?.id;
-                    console.log(`Updating pin ${pin.id}: "${pin.title}"`);
+                    console.log(`Updating pin ${pin.id}: "${pin.title}" with category_id: ${categoryId}`);
 
                     const { error: updateError, data: updatedPin } = await supabase
                         .from('pins')
@@ -164,7 +176,8 @@ export default function AdminMapEditorPage({ params }) {
                             description: pin.description || '',
                             x: pin.x,
                             y: pin.y,
-                            category_id: categoryId
+                            category_id: categoryId,
+                            target_map_id: pin.target_map_id || null
                         })
                         .eq('id', pin.id)
                         .select()
@@ -175,12 +188,14 @@ export default function AdminMapEditorPage({ params }) {
                             message: updateError.message,
                             details: updateError.details,
                             hint: updateError.hint,
-                            code: updateError.code
+                            code: updateError.code,
+                            pinId: pin.id
                         });
-                        throw new Error(`Update failed: ${updateError.message}`);
+                        throw new Error(`Update failed for pin ${pin.id}: ${updateError.message}`);
                     }
 
                     if (updatedPin) {
+                        console.log(`Successfully updated pin ${pin.id}`);
                         allSavedPins.push(updatedPin);
                     }
                 }
@@ -316,6 +331,7 @@ export default function AdminMapEditorPage({ params }) {
                                     'treasure'
                             }))}
                             categories={categories}
+                            allMaps={allMaps}
                             onSave={handleSave}
                         />
                     ) : (
