@@ -22,6 +22,9 @@ export default function HomePage() {
           </h1>
         </div>
       </div>
+      <div className="h-4" />
+        <Link href="/walkthrough" className="text-sm text-primary hover:underline">Start the Full Walkthrough &rarr;</Link>
+      <div className="h-8" />
 
       {/* Intro Text */}
       <div className="prose prose-invert max-w-none">
