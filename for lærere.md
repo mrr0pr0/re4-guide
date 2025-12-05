@@ -16,3 +16,7 @@ Dersom dere trenger å se backend:
 Dere kan sette opp SQL-databasen selv basert på strukturen som ligger i prosjektet, eller
 
 Dere kan ta kontakt med meg, så kan jeg sende databasetabellene ved behov.
+
+## hva som ikke er inlagt.
+
+alt av auth er ikke inlagt pga jeg ikke har gjort mesteparten av det. jeg har heller ikke stått for mye av tingene i lib men har det som er grunnelgene for fungerende der. som jeg har sammerbeidet med for å få laged.

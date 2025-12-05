@@ -15,7 +15,16 @@ async function getTreasure(slug) {
     return null;
   }
 
-  return data;
+  // Fetch linked images from treasures_image table
+  const { data: images, error: imagesError } = await supabase
+    .from("treasures_image")
+    .select("*")
+    .eq("treasure_id", data.id);
+
+  return {
+    ...data,
+    images: images || []
+  };
 }
 
 export default async function TreasureDetailPage({ params }) {
@@ -33,17 +42,33 @@ export default async function TreasureDetailPage({ params }) {
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 mb-8">
-        {treasure.image_url && (
-          <div className="relative w-full h-64 rounded-lg shadow-lg">
-            <Image
-              src={treasure.image_url}
-              alt={treasure.name}
-              fill
-              style={{ objectFit: "cover" }}
-              priority
-            />
-          </div>
-        )}
+        <div>
+          {treasure.image_url && (
+            <div className="relative w-full h-64 rounded-lg shadow-lg mb-4">
+              <Image
+                src={treasure.image_url}
+                alt={treasure.name}
+                fill
+                style={{ objectFit: "cover" }}
+                priority
+              />
+            </div>
+          )}
+          {treasure.images && treasure.images.length > 0 && (
+            <div className="space-y-4">
+              {treasure.images.map((img, index) => (
+                <div key={img.id} className="relative w-full h-64 rounded-lg shadow-lg">
+                  <Image
+                    src={img.image_url}
+                    alt={`${treasure.name} - Image ${index + 1}`}
+                    fill
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div>
           {treasure.description && (
