@@ -2,9 +2,10 @@
 
 import { useState, useEffect, use } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import MapSidebar from '@/components/MapSidebar';
 import { supabase } from '@/lib/supabaseClient';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft, ArrowRight } from 'lucide-react';
 
 // Dynamically import GameMap to avoid SSR issues with Leaflet
 const GameMap = dynamic(() => import('@/components/GameMap'), {
@@ -109,7 +110,9 @@ export default function AreaMapPage({ params }) {
       // 2. Fetch All Maps (for teleport functionality)
       const { data: mapsData, error: mapsError } = await supabase
         .from('maps')
-        .select('id, title, slug');
+        .select('id, title, slug, order_index, show')
+        .eq('show', true)
+        .order('order_index', { ascending: true });
 
       if (mapsError) throw mapsError;
       setAllMaps(mapsData || []);
@@ -188,6 +191,10 @@ export default function AreaMapPage({ params }) {
     title: (p.category !== 'teleport' && foundPins.includes(p.id)) ? `✓ ${p.title}` : p.title
   }));
 
+  const mapIndex = allMaps.findIndex(m => m.slug === area);
+  const prevMap = mapIndex > 0 ? allMaps[mapIndex - 1] : null;
+  const nextMap = mapIndex >= 0 && mapIndex < allMaps.length - 1 ? allMaps[mapIndex + 1] : null;
+
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-3.5rem)] overflow-hidden">
       <MapSidebar
@@ -196,6 +203,29 @@ export default function AreaMapPage({ params }) {
       />
 
       <div className="flex-1 relative bg-gray-950 h-full">
+        {(prevMap || nextMap) && (
+          <div className="absolute top-4 right-4 z-20 flex gap-2">
+            {prevMap && (
+              <Link
+                href={`/maps/${prevMap.slug}`}
+                className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm font-medium text-white backdrop-blur border border-white/15 hover:bg-white/15 transition"
+              >
+                <ArrowLeft size={16} />
+                <span>{prevMap.title}</span>
+              </Link>
+            )}
+            {nextMap && (
+              <Link
+                href={`/maps/${nextMap.slug}`}
+                className="inline-flex items-center gap-2 rounded-lg bg-primary/80 px-3 py-2 text-sm font-medium text-white backdrop-blur border border-primary/70 hover:bg-primary transition"
+              >
+                <span>{nextMap.title}</span>
+                <ArrowRight size={16} />
+              </Link>
+            )}
+          </div>
+        )}
+
         <GameMap
           imageUrl={mapData.image_url}
           pins={displayPins}
