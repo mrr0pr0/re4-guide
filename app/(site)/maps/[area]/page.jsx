@@ -6,6 +6,8 @@ import Link from 'next/link';
 import MapSidebar from '@/components/MapSidebar';
 import { supabase } from '@/lib/supabaseClient';
 import { Loader2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
+import { toast } from 'sonner';
 
 // Dynamically import GameMap to avoid SSR issues with Leaflet
 const GameMap = dynamic(() => import('@/components/GameMap'), {
@@ -16,6 +18,7 @@ const GameMap = dynamic(() => import('@/components/GameMap'), {
 export default function AreaMapPage({ params }) {
   const resolvedParams = use(params);
   const { area } = resolvedParams;
+  const { user, loading: authLoading } = useAuth();
 
   const [mapData, setMapData] = useState(null);
   const [pins, setPins] = useState([]);
@@ -25,12 +28,6 @@ export default function AreaMapPage({ params }) {
   const [foundPins, setFoundPins] = useState([]);
 
   useEffect(() => {
-    // Load found pins from local storage
-    const savedFound = localStorage.getItem('re4_found_pins');
-    if (savedFound) {
-      setFoundPins(JSON.parse(savedFound));
-    }
-
     fetchMapData();
 
     // Set up real-time subscription for pins
@@ -93,6 +90,38 @@ export default function AreaMapPage({ params }) {
     };
   }, [area]);
 
+  const loadLocalProgress = () => {
+    if (typeof window === 'undefined') return;
+    const savedFound = localStorage.getItem('re4_found_pins');
+    if (savedFound) {
+      setFoundPins(JSON.parse(savedFound));
+    } else {
+      setFoundPins([]);
+    }
+  };
+
+  const loadUserProgress = async (mapId) => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('user_pin_progress')
+      .select('pin_id')
+      .eq('user_id', user.id)
+      .eq('map_id', mapId)
+      .eq('found', true);
+
+    if (error) {
+      console.error('Error loading progress', error);
+      toast.error('Could not load your progress');
+      return;
+    }
+
+    const pinIds = data?.map((row) => row.pin_id) ?? [];
+    setFoundPins(pinIds);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('re4_found_pins', JSON.stringify(pinIds));
+    }
+  };
+
   const fetchMapData = async () => {
     try {
       setLoading(true);
@@ -154,6 +183,16 @@ export default function AreaMapPage({ params }) {
     }
   };
 
+  useEffect(() => {
+    if (!mapData) return;
+    if (user) {
+      loadUserProgress(mapData.id);
+    } else if (!authLoading) {
+      loadLocalProgress();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading, mapData?.id]);
+
   const toggleCategory = (key) => {
     setCategories(prev => ({
       ...prev,
@@ -161,7 +200,7 @@ export default function AreaMapPage({ params }) {
     }));
   };
 
-  const handlePinClick = (pin) => {
+  const handlePinClick = async (pin) => {
     // Toggle found status (only for non-teleport pins)
     if (pin.category === 'teleport') return;
 
@@ -175,7 +214,33 @@ export default function AreaMapPage({ params }) {
     }
 
     setFoundPins(newFound);
-    localStorage.setItem('re4_found_pins', JSON.stringify(newFound));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('re4_found_pins', JSON.stringify(newFound));
+    }
+
+    if (user && mapData) {
+      const supabaseAction = isFound
+        ? supabase
+            .from('user_pin_progress')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('pin_id', pin.id)
+        : supabase
+            .from('user_pin_progress')
+            .upsert({
+              user_id: user.id,
+              pin_id: pin.id,
+              map_id: mapData.id,
+              found: true,
+              updated_at: new Date().toISOString(),
+            });
+
+      const { error } = await supabaseAction;
+      if (error) {
+        console.error('Error saving progress', error);
+        toast.error('Could not save your progress');
+      }
+    }
   };
 
   if (loading) {
