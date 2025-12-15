@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
-import { Plus, Map as MapIcon, Loader2 } from 'lucide-react';
+import { Plus, Map as MapIcon, Loader2, RefreshCw } from 'lucide-react';
+import AdminPageHeader from '@/components/AdminPageHeader';
+import { toast } from 'sonner';
 
 export default function AdminMapsPage() {
     const [maps, setMaps] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         fetchMaps();
@@ -22,6 +25,7 @@ export default function AdminMapsPage() {
 
     const fetchMaps = async () => {
         try {
+            setRefreshing(true);
             const { data, error } = await supabase
                 .from('maps')
                 .select('*')
@@ -31,55 +35,78 @@ export default function AdminMapsPage() {
             setMaps(data || []);
         } catch (error) {
             console.error('Error fetching maps:', error);
+            toast.error('Failed to load maps');
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     };
 
     if (loading) {
-        return <div className="flex items-center justify-center h-full"><Loader2 className="animate-spin" /></div>;
+        return (
+            <div className="flex h-full items-center justify-center">
+                <Loader2 className="animate-spin text-slate-200" />
+            </div>
+        );
     }
 
     return (
-        <div className="p-8">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Maps</h1>
-                <Link
-                    href="/admin/maps/new"
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
-                >
-                    <Plus size={16} /> Add New Map
-                </Link>
-            </div>
+        <div className="space-y-6">
+            <AdminPageHeader
+                title="Maps"
+                description="Create maps, place pins, and connect teleports."
+                actions={
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={fetchMaps}
+                            className="flex items-center gap-2 rounded-full border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-slate-500"
+                        >
+                            <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
+                            Refresh
+                        </button>
+                        <Link
+                            href="/admin/maps/new"
+                            className="flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400"
+                        >
+                            <Plus size={16} /> Add Map
+                        </Link>
+                    </div>
+                }
+            />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {maps.map((map) => (
                     <Link
                         key={map.id}
                         href={`/admin/maps/${map.id}`}
-                        className="group block border rounded-lg overflow-hidden hover:border-primary transition-colors"
+                        className="group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg shadow-black/30 transition hover:border-slate-600"
                     >
-                        <div className="aspect-video bg-muted relative">
+                        <div className="aspect-video bg-slate-900">
                             <img
                                 src={map.image_url}
                                 alt={map.title}
-                                className="w-full h-full object-cover"
+                                className="h-full w-full object-cover opacity-90 transition duration-200 group-hover:opacity-100"
                             />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span className="text-white font-medium">Edit Map</span>
-                            </div>
                         </div>
-                        <div className="p-4">
-                            <h3 className="font-bold text-lg">{map.title}</h3>
-                            <p className="text-sm text-muted-foreground">Slug: {map.slug}</p>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                        <div className="absolute inset-0 flex flex-col justify-between p-4">
+                            <div className="flex items-center justify-between text-xs text-slate-200/80">
+                                <span className="rounded-full bg-slate-900/80 px-3 py-1 font-semibold uppercase tracking-wide text-[10px] text-slate-200">Slug: {map.slug}</span>
+                                <span className="rounded-full bg-slate-900/80 px-3 py-1 font-semibold text-emerald-300">Order #{map.order_index ?? 0}</span>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold text-white drop-shadow-md">{map.title}</h3>
+                                <p className="text-sm text-slate-200/80">Click to edit pins</p>
+                            </div>
                         </div>
                     </Link>
                 ))}
 
                 {maps.length === 0 && (
-                    <div className="col-span-full text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
-                        <MapIcon className="mx-auto mb-4 opacity-50" size={48} />
-                        <p>No maps found. Create one to get started.</p>
+                    <div className="col-span-full rounded-xl border border-dashed border-slate-800 bg-slate-900/40 px-6 py-12 text-center text-slate-300">
+                        <MapIcon className="mx-auto mb-4 opacity-70" size={48} />
+                        <p className="font-medium">No maps found</p>
+                        <p className="text-sm text-slate-400">Create one to get started.</p>
                     </div>
                 )}
             </div>

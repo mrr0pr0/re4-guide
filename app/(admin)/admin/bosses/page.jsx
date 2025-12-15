@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import AdminTable from '@/components/AdminTable';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 export default function AdminBossesPage() {
     const [bosses, setBosses] = useState([]);
@@ -25,7 +27,7 @@ export default function AdminBossesPage() {
             setBosses(data || []);
         } catch (error) {
             console.error('Error fetching bosses:', error);
-            alert('Error fetching bosses');
+            toast.error('Error fetching bosses');
         } finally {
             setLoading(false);
         }
@@ -44,7 +46,7 @@ export default function AdminBossesPage() {
             fetchBosses(); // Refresh list
         } catch (error) {
             console.error('Error deleting boss:', error);
-            alert('Error deleting boss');
+            toast.error('Error deleting boss');
         }
     }
 
@@ -56,26 +58,27 @@ export default function AdminBossesPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold tracking-tight">Manage Bosses</h1>
-                <Link
-                    href="/admin/bosses/new"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                    Add New Boss
-                </Link>
-            </div>
+            <AdminPageHeader
+                title="Manage Bosses"
+                description="Add, edit, and remove boss encounters."
+                actions={
+                    <Link
+                        href="/admin/bosses/new"
+                        className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400"
+                    >
+                        + Add Boss
+                    </Link>
+                }
+            />
 
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <AdminTable
-                    data={bosses}
-                    columns={columns}
-                    onDelete={handleDelete}
-                    editUrlBase="/admin/bosses"
-                />
-            )}
+            <AdminTable
+                data={bosses}
+                columns={columns}
+                onDelete={handleDelete}
+                editUrlBase="/admin/bosses"
+                loading={loading}
+                emptyMessage="No bosses yet. Create your first encounter."
+            />
         </div>
     );
 }

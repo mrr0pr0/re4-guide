@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import AdminTable from '@/components/AdminTable';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 export default function AdminWeaponsPage() {
     const [weapons, setWeapons] = useState([]);
@@ -25,7 +27,7 @@ export default function AdminWeaponsPage() {
             setWeapons(data || []);
         } catch (error) {
             console.error('Error fetching weapons:', error);
-            alert('Error fetching weapons');
+            toast.error('Error fetching weapons');
         } finally {
             setLoading(false);
         }
@@ -44,7 +46,7 @@ export default function AdminWeaponsPage() {
             fetchWeapons(); // Refresh list
         } catch (error) {
             console.error('Error deleting weapon:', error);
-            alert('Error deleting weapon');
+            toast.error('Error deleting weapon');
         }
     }
 
@@ -56,26 +58,27 @@ export default function AdminWeaponsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold tracking-tight">Manage Weapons</h1>
-                <Link
-                    href="/admin/weapons/new"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                    Add New Weapon
-                </Link>
-            </div>
+            <AdminPageHeader
+                title="Manage Weapons"
+                description="Update weapon stats, pricing, and availability."
+                actions={
+                    <Link
+                        href="/admin/weapons/new"
+                        className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400"
+                    >
+                        + Add Weapon
+                    </Link>
+                }
+            />
 
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <AdminTable
-                    data={weapons}
-                    columns={columns}
-                    onDelete={handleDelete}
-                    editUrlBase="/admin/weapons"
-                />
-            )}
+            <AdminTable
+                data={weapons}
+                columns={columns}
+                onDelete={handleDelete}
+                editUrlBase="/admin/weapons"
+                loading={loading}
+                emptyMessage="No weapons found. Add your first weapon."
+            />
         </div>
     );
 }

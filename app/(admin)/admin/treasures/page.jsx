@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import AdminTable from '@/components/AdminTable';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 export default function AdminTreasuresPage() {
     const [treasures, setTreasures] = useState([]);
@@ -25,7 +27,7 @@ export default function AdminTreasuresPage() {
             setTreasures(data || []);
         } catch (error) {
             console.error('Error fetching treasures:', error);
-            alert('Error fetching treasures');
+            toast.error('Error fetching treasures');
         } finally {
             setLoading(false);
         }
@@ -44,7 +46,7 @@ export default function AdminTreasuresPage() {
             fetchTreasures(); // Refresh list
         } catch (error) {
             console.error('Error deleting treasure:', error);
-            alert('Error deleting treasure');
+            toast.error('Error deleting treasure');
         }
     }
 
@@ -57,26 +59,27 @@ export default function AdminTreasuresPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold tracking-tight">Manage Treasures</h1>
-                <Link
-                    href="/admin/treasures/new"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                    Add New Treasure
-                </Link>
-            </div>
+            <AdminPageHeader
+                title="Manage Treasures"
+                description="Curate treasure data, values, and locations."
+                actions={
+                    <Link
+                        href="/admin/treasures/new"
+                        className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400"
+                    >
+                        + Add Treasure
+                    </Link>
+                }
+            />
 
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <AdminTable
-                    data={treasures}
-                    columns={columns}
-                    onDelete={handleDelete}
-                    editUrlBase="/admin/treasures"
-                />
-            )}
+            <AdminTable
+                data={treasures}
+                columns={columns}
+                onDelete={handleDelete}
+                editUrlBase="/admin/treasures"
+                loading={loading}
+                emptyMessage="No treasures yet. Add your first collectible."
+            />
         </div>
     );
 }
