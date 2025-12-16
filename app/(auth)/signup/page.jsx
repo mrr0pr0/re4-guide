@@ -21,23 +21,29 @@ export default function SignupPage() {
       toast.error("Passwords do not match");
       return;
     }
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        toast.error(error.message || "Sign up failed");
+        return;
+      }
+      toast.success("Account created. Please verify your email.");
+      router.replace("/admin");
+    } catch (err) {
+      console.error("Unexpected signup error", err);
+      toast.error("Unexpected error while signing up");
+    } finally {
+      setLoading(false);
     }
-    toast.success("Account created. Please verify your email.");
-    router.replace("/admin");
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-8 shadow-xl shadow-black/30">
+      <h1 className="text-2xl font-bold mb-6 text-center text-white">Sign Up</h1>
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
             Email
           </label>
           <Input
@@ -46,10 +52,11 @@ export default function SignupPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="border-slate-700 bg-slate-950/50 text-slate-50 placeholder:text-slate-500"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
             Password
           </label>
           <Input
@@ -58,10 +65,11 @@ export default function SignupPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="border-slate-700 bg-slate-950/50 text-slate-50 placeholder:text-slate-500"
           />
         </div>
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300 mb-1">
             Confirm Password
           </label>
           <Input
@@ -70,20 +78,21 @@ export default function SignupPage() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            className="border-slate-700 bg-slate-950/50 text-slate-50 placeholder:text-slate-500"
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Creating account..." : "Sign Up"}
         </Button>
       </form>
-      <p className="mt-4 text-center text-sm text-gray-600">
+      <p className="mt-4 text-center text-sm text-slate-400">
         Already have an account?{" "}
-        <Link href="/login" className="text-blue-600 hover:underline">
+        <Link href="/login" className="text-blue-400 hover:underline">
           Login
         </Link>
       </p>
       <p className="mt-2 text-center">
-        <Link href="/" className="text-sm text-gray-600 hover:underline">
+        <Link href="/" className="text-sm text-slate-400 hover:underline">
           Back to home
         </Link>
       </p>

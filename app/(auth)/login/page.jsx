@@ -16,23 +16,29 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast.error(error.message || "Login failed");
+        return;
+      }
+      toast.success("Logged in");
+      router.replace("/admin");
+    } catch (err) {
+      console.error("Unexpected login error", err);
+      toast.error("Unexpected error while signing in");
+    } finally {
+      setLoading(false);
     }
-    toast.success("Logged in");
-    router.replace("/admin");
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-8 shadow-xl shadow-black/30">
+      <h1 className="text-2xl font-bold mb-6 text-center text-white">Login</h1>
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
             Email
           </label>
           <Input
@@ -41,10 +47,11 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="border-slate-700 bg-slate-950/50 text-slate-50 placeholder:text-slate-500"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
             Password
           </label>
           <Input
@@ -53,20 +60,21 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="border-slate-700 bg-slate-950/50 text-slate-50 placeholder:text-slate-500"
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Signing in..." : "Login"}
         </Button>
       </form>
-      <p className="mt-4 text-center text-sm text-gray-600">
+      <p className="mt-4 text-center text-sm text-slate-400">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-blue-600 hover:underline">
+        <Link href="/signup" className="text-blue-400 hover:underline">
           Sign up
         </Link>
       </p>
       <p className="mt-2 text-center">
-        <Link href="/" className="text-sm text-gray-600 hover:underline">
+        <Link href="/" className="text-sm text-slate-400 hover:underline">
           Back to home
         </Link>
       </p>
