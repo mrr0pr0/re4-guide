@@ -9,11 +9,9 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems = [
-    { href: '/walkthrough', label: 'Walkthrough' },
-    { href: '/bosses', label: 'Bosses' },
-    { href: '/treasures', label: 'Treasures' },
-    { href: '/weapons', label: 'Weapons' },
+  const authLinks = [
+    { href: '/login', label: 'Log in', variant: 'ghost' },
+    { href: '/signup', label: 'Sign up', variant: 'primary' },
   ];
 
   const isActive = (href) => pathname?.startsWith(href);
@@ -29,25 +27,28 @@ export default function SiteHeader() {
 
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md ${
-                isActive(item.href)
-                  ? 'text-primary bg-primary/10'
-                  : 'text-foreground/70 hover:text-foreground hover:bg-accent/50'
-              }`}
-            >
-              {item.label}
-              {isActive(item.href) && (
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
-              )}
-            </Link>
-          ))}
-        </nav>
+        {/* Desktop Auth Actions */}
+        <div className="hidden md:flex items-center space-x-3">
+          {authLinks.map((item) => {
+            const baseClasses = 'px-4 py-2 text-sm font-medium rounded-md transition-all duration-300';
+            const variantClasses =
+              item.variant === 'primary'
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
+                : 'text-foreground/80 hover:text-foreground hover:bg-accent/50 border border-border/60';
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`${baseClasses} ${variantClasses} ${
+                  isActive(item.href) ? 'ring-2 ring-primary/40 ring-offset-2 ring-offset-background' : ''
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -63,16 +64,16 @@ export default function SiteHeader() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-xl">
           <nav className="container py-4 flex flex-col space-y-2">
-            {navItems.map((item) => (
+            {authLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-4 py-3 text-sm font-medium transition-all duration-300 rounded-md ${
-                  isActive(item.href)
-                    ? 'text-primary bg-primary/10 border-l-4 border-primary'
-                    : 'text-foreground/70 hover:text-foreground hover:bg-accent/50'
-                }`}
+                  item.variant === 'primary'
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'text-foreground/80 hover:text-foreground hover:bg-accent/50 border border-border/60'
+                } ${isActive(item.href) ? 'ring-2 ring-primary/40' : ''}`}
               >
                 {item.label}
               </Link>
