@@ -172,7 +172,7 @@ export default function BossesPage() {
                   <div className="relative w-full h-48 border-b border-gray-800 overflow-hidden">
                     <Image
                       src={boss.image_url}
-                      alt={boss.name}
+                      alt={boss.name} 
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                       priority={false}
